@@ -650,16 +650,6 @@ export enum ActuatorOutputFunction {
 }
 
 /**
- * Enable axes that will be tuned via autotuning. Used in MAV_CMD_DO_AUTOTUNE_ENABLE.
- */
-export enum AutotuneAxis {
-  'DEFAULT'                                        = 0,
-  'ROLL'                                           = 1,
-  'PITCH'                                          = 2,
-  'YAW'                                            = 3,
-}
-
-/**
  * Commands to be executed by the MAV. They can be executed on user request, or as part of a mission
  * script. If the action is used in a mission, the parameter mapping to the waypoint/mission message is
  * as follows: Param 1, Param 2, Param 3, Param 4, X: Param 5, Y:Param 6, Z:Param 7. This command list
@@ -2690,28 +2680,23 @@ export class SysStatus extends MavLinkData {
   onboardControlSensorsHealth: MavSysStatusSensor
   /**
    * Maximum usage in percent of the mainloop time. Values: [0-1000] - should always be below 1000
-   * Units: d%
    */
   load: uint16_t
   /**
    * Battery voltage, UINT16_MAX: Voltage not sent by autopilot
-   * Units: mV
    */
   voltageBattery: uint16_t
   /**
    * Battery current, -1: Current not sent by autopilot
-   * Units: cA
    */
   currentBattery: int16_t
   /**
    * Battery energy remaining, -1: Battery remaining energy not sent by autopilot
-   * Units: %
    */
   batteryRemaining: int8_t
   /**
    * Communication drop rate, (UART, I2C, SPI, CAN), dropped packets on all links (packets that were
    * corrupted on reception on the MAV)
-   * Units: c%
    */
   dropRateComm: uint16_t
   /**
@@ -2769,12 +2754,10 @@ export class SystemTime extends MavLinkData {
 
   /**
    * Timestamp (UNIX epoch time).
-   * Units: us
    */
   timeUnixUsec: uint64_t
   /**
    * Timestamp (time since system boot).
-   * Units: ms
    */
   timeBootMs: uint32_t
 }
@@ -2802,7 +2785,6 @@ export class Ping extends MavLinkData {
   /**
    * Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format
    * (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
-   * Units: us
    */
   timeUsec: uint64_t
   /**
@@ -2849,7 +2831,6 @@ export class ChangeOperatorControl extends MavLinkData {
    * 0: key as plaintext, 1-255: future, different hashing/encryption variants. The GCS should in general
    * use the safest mode possible initially and then gradually move down the encryption level if it gets
    * a NACK message indicating an encryption mismatch.
-   * Units: rad
    */
   version: uint8_t
   /**
@@ -2934,42 +2915,34 @@ export class LinkNodeStatus extends MavLinkData {
 
   /**
    * Timestamp (time since system boot).
-   * Units: ms
    */
   timestamp: uint64_t
   /**
    * Remaining free transmit buffer space
-   * Units: %
    */
   txBuf: uint8_t
   /**
    * Remaining free receive buffer space
-   * Units: %
    */
   rxBuf: uint8_t
   /**
    * Transmit rate
-   * Units: bytes/s
    */
   txRate: uint32_t
   /**
    * Receive rate
-   * Units: bytes/s
    */
   rxRate: uint32_t
   /**
    * Number of bytes that could not be parsed correctly.
-   * Units: bytes
    */
   rxParseErr: uint16_t
   /**
    * Transmit buffer overflows. This number wraps around as it reaches UINT16_MAX
-   * Units: bytes
    */
   txOverflows: uint16_t
   /**
    * Receive buffer overflows. This number wraps around as it reaches UINT16_MAX
-   * Units: bytes
    */
   rxOverflows: uint16_t
   /**
@@ -3210,7 +3183,6 @@ export class GpsRawInt extends MavLinkData {
   /**
    * Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format
    * (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
-   * Units: us
    */
   timeUsec: uint64_t
   /**
@@ -3219,18 +3191,15 @@ export class GpsRawInt extends MavLinkData {
   fixType: GpsFixType
   /**
    * Latitude (WGS84, EGM96 ellipsoid)
-   * Units: degE7
    */
   lat: int32_t
   /**
    * Longitude (WGS84, EGM96 ellipsoid)
-   * Units: degE7
    */
   lon: int32_t
   /**
    * Altitude (MSL). Positive for up. Note that virtually all GPS modules provide the MSL altitude in
    * addition to the WGS84 altitude.
-   * Units: mm
    */
   alt: int32_t
   /**
@@ -3243,13 +3212,11 @@ export class GpsRawInt extends MavLinkData {
   epv: uint16_t
   /**
    * GPS ground speed. If unknown, set to: UINT16_MAX
-   * Units: cm/s
    */
   vel: uint16_t
   /**
    * Course over ground (NOT heading, but direction of movement) in degrees * 100, 0.0..359.99 degrees.
    * If unknown, set to: UINT16_MAX
-   * Units: cdeg
    */
   cog: uint16_t
   /**
@@ -3258,33 +3225,27 @@ export class GpsRawInt extends MavLinkData {
   satellitesVisible: uint8_t
   /**
    * Altitude (above WGS84, EGM96 ellipsoid). Positive for up.
-   * Units: mm
    */
   altEllipsoid: int32_t
   /**
    * Position uncertainty.
-   * Units: mm
    */
   hAcc: uint32_t
   /**
    * Altitude uncertainty.
-   * Units: mm
    */
   vAcc: uint32_t
   /**
    * Speed uncertainty.
-   * Units: mm
    */
   velAcc: uint32_t
   /**
    * Heading / track uncertainty
-   * Units: degE5
    */
   hdgAcc: uint32_t
   /**
    * Yaw in earth frame from north. Use 0 if this GPS does not provide yaw. Use UINT16_MAX if this GPS is
    * configured to provide yaw and is currently unable to provide it. Use 36000 for north.
-   * Units: cdeg
    */
   yaw: uint16_t
 }
@@ -3323,17 +3284,14 @@ export class GpsStatus extends MavLinkData {
   satelliteUsed: uint8_t[]
   /**
    * Elevation (0: right on top of receiver, 90: on the horizon) of satellite
-   * Units: deg
    */
   satelliteElevation: uint8_t[]
   /**
    * Direction of satellite, 0: 0 deg, 255: 360 deg.
-   * Units: deg
    */
   satelliteAzimuth: uint8_t[]
   /**
    * Signal to noise ratio of satellite
-   * Units: dB
    */
   satelliteSnr: uint8_t[]
 }
@@ -3364,57 +3322,46 @@ export class ScaledImu extends MavLinkData {
 
   /**
    * Timestamp (time since system boot).
-   * Units: ms
    */
   timeBootMs: uint32_t
   /**
    * X acceleration
-   * Units: mG
    */
   xacc: int16_t
   /**
    * Y acceleration
-   * Units: mG
    */
   yacc: int16_t
   /**
    * Z acceleration
-   * Units: mG
    */
   zacc: int16_t
   /**
    * Angular speed around X axis
-   * Units: mrad/s
    */
   xgyro: int16_t
   /**
    * Angular speed around Y axis
-   * Units: mrad/s
    */
   ygyro: int16_t
   /**
    * Angular speed around Z axis
-   * Units: mrad/s
    */
   zgyro: int16_t
   /**
    * X Magnetic field
-   * Units: mgauss
    */
   xmag: int16_t
   /**
    * Y Magnetic field
-   * Units: mgauss
    */
   ymag: int16_t
   /**
    * Z Magnetic field
-   * Units: mgauss
    */
   zmag: int16_t
   /**
    * Temperature, 0: IMU does not provide temperature values. If the IMU is at 0C it must send 1 (0.01C).
-   * Units: cdegC
    */
   temperature: int16_t
 }
@@ -3448,7 +3395,6 @@ export class RawImu extends MavLinkData {
   /**
    * Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format
    * (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
-   * Units: us
    */
   timeUsec: uint64_t
   /**
@@ -3494,7 +3440,6 @@ export class RawImu extends MavLinkData {
   id: uint8_t
   /**
    * Temperature, 0: IMU does not provide temperature values. If the IMU is at 0C it must send 1 (0.01C).
-   * Units: cdegC
    */
   temperature: int16_t
 }
@@ -3520,7 +3465,6 @@ export class RawPressure extends MavLinkData {
   /**
    * Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format
    * (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
-   * Units: us
    */
   timeUsec: uint64_t
   /**
@@ -3561,27 +3505,22 @@ export class ScaledPressure extends MavLinkData {
 
   /**
    * Timestamp (time since system boot).
-   * Units: ms
    */
   timeBootMs: uint32_t
   /**
    * Absolute pressure
-   * Units: hPa
    */
   pressAbs: float
   /**
    * Differential pressure 1
-   * Units: hPa
    */
   pressDiff: float
   /**
    * Absolute pressure temperature
-   * Units: cdegC
    */
   temperature: int16_t
   /**
    * Differential pressure temperature (0, if not available). Report values of 0 (or 1) as 1 cdegC.
-   * Units: cdegC
    */
   temperaturePressDiff: int16_t
 }
@@ -3607,37 +3546,30 @@ export class Attitude extends MavLinkData {
 
   /**
    * Timestamp (time since system boot).
-   * Units: ms
    */
   timeBootMs: uint32_t
   /**
    * Roll angle (-pi..+pi)
-   * Units: rad
    */
   roll: float
   /**
    * Pitch angle (-pi..+pi)
-   * Units: rad
    */
   pitch: float
   /**
    * Yaw angle (-pi..+pi)
-   * Units: rad
    */
   yaw: float
   /**
    * Roll angular speed
-   * Units: rad/s
    */
   rollspeed: float
   /**
    * Pitch angular speed
-   * Units: rad/s
    */
   pitchspeed: float
   /**
    * Yaw angular speed
-   * Units: rad/s
    */
   yawspeed: float
 }
@@ -3666,7 +3598,6 @@ export class AttitudeQuaternion extends MavLinkData {
 
   /**
    * Timestamp (time since system boot).
-   * Units: ms
    */
   timeBootMs: uint32_t
   /**
@@ -3687,17 +3618,14 @@ export class AttitudeQuaternion extends MavLinkData {
   q4: float
   /**
    * Roll angular speed
-   * Units: rad/s
    */
   rollspeed: float
   /**
    * Pitch angular speed
-   * Units: rad/s
    */
   pitchspeed: float
   /**
    * Yaw angular speed
-   * Units: rad/s
    */
   yawspeed: float
   /**
@@ -3733,37 +3661,30 @@ export class LocalPositionNed extends MavLinkData {
 
   /**
    * Timestamp (time since system boot).
-   * Units: ms
    */
   timeBootMs: uint32_t
   /**
    * X Position
-   * Units: m
    */
   x: float
   /**
    * Y Position
-   * Units: m
    */
   y: float
   /**
    * Z Position
-   * Units: m
    */
   z: float
   /**
    * X Speed
-   * Units: m/s
    */
   vx: float
   /**
    * Y Speed
-   * Units: m/s
    */
   vy: float
   /**
    * Z Speed
-   * Units: m/s
    */
   vz: float
 }
@@ -3793,47 +3714,38 @@ export class GlobalPositionInt extends MavLinkData {
 
   /**
    * Timestamp (time since system boot).
-   * Units: ms
    */
   timeBootMs: uint32_t
   /**
    * Latitude, expressed
-   * Units: degE7
    */
   lat: int32_t
   /**
    * Longitude, expressed
-   * Units: degE7
    */
   lon: int32_t
   /**
    * Altitude (MSL). Note that virtually all GPS modules provide both WGS84 and MSL.
-   * Units: mm
    */
   alt: int32_t
   /**
    * Altitude above ground
-   * Units: mm
    */
   relativeAlt: int32_t
   /**
    * Ground X Speed (Latitude, positive north)
-   * Units: cm/s
    */
   vx: int16_t
   /**
    * Ground Y Speed (Longitude, positive east)
-   * Units: cm/s
    */
   vy: int16_t
   /**
    * Ground Z Speed (Altitude, positive down)
-   * Units: cm/s
    */
   vz: int16_t
   /**
    * Vehicle heading (yaw angle), 0.0..359.99 degrees. If unknown, set to: UINT16_MAX
-   * Units: cdeg
    */
   hdg: uint16_t
 }
@@ -3864,7 +3776,6 @@ export class RcChannelsScaled extends MavLinkData {
 
   /**
    * Timestamp (time since system boot).
-   * Units: ms
    */
   timeBootMs: uint32_t
   /**
@@ -3938,7 +3849,6 @@ export class RcChannelsRaw extends MavLinkData {
 
   /**
    * Timestamp (time since system boot).
-   * Units: ms
    */
   timeBootMs: uint32_t
   /**
@@ -3948,42 +3858,34 @@ export class RcChannelsRaw extends MavLinkData {
   port: uint8_t
   /**
    * RC channel 1 value.
-   * Units: us
    */
   chan1Raw: uint16_t
   /**
    * RC channel 2 value.
-   * Units: us
    */
   chan2Raw: uint16_t
   /**
    * RC channel 3 value.
-   * Units: us
    */
   chan3Raw: uint16_t
   /**
    * RC channel 4 value.
-   * Units: us
    */
   chan4Raw: uint16_t
   /**
    * RC channel 5 value.
-   * Units: us
    */
   chan5Raw: uint16_t
   /**
    * RC channel 6 value.
-   * Units: us
    */
   chan6Raw: uint16_t
   /**
    * RC channel 7 value.
-   * Units: us
    */
   chan7Raw: uint16_t
   /**
    * RC channel 8 value.
-   * Units: us
    */
   chan8Raw: uint16_t
   /**
@@ -4028,7 +3930,6 @@ export class ServoOutputRaw extends MavLinkData {
   /**
    * Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format
    * (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
-   * Units: us
    */
   timeUsec: uint32_t
   /**
@@ -4038,82 +3939,66 @@ export class ServoOutputRaw extends MavLinkData {
   port: uint8_t
   /**
    * Servo output 1 value
-   * Units: us
    */
   servo1Raw: uint16_t
   /**
    * Servo output 2 value
-   * Units: us
    */
   servo2Raw: uint16_t
   /**
    * Servo output 3 value
-   * Units: us
    */
   servo3Raw: uint16_t
   /**
    * Servo output 4 value
-   * Units: us
    */
   servo4Raw: uint16_t
   /**
    * Servo output 5 value
-   * Units: us
    */
   servo5Raw: uint16_t
   /**
    * Servo output 6 value
-   * Units: us
    */
   servo6Raw: uint16_t
   /**
    * Servo output 7 value
-   * Units: us
    */
   servo7Raw: uint16_t
   /**
    * Servo output 8 value
-   * Units: us
    */
   servo8Raw: uint16_t
   /**
    * Servo output 9 value
-   * Units: us
    */
   servo9Raw: uint16_t
   /**
    * Servo output 10 value
-   * Units: us
    */
   servo10Raw: uint16_t
   /**
    * Servo output 11 value
-   * Units: us
    */
   servo11Raw: uint16_t
   /**
    * Servo output 12 value
-   * Units: us
    */
   servo12Raw: uint16_t
   /**
    * Servo output 13 value
-   * Units: us
    */
   servo13Raw: uint16_t
   /**
    * Servo output 14 value
-   * Units: us
    */
   servo14Raw: uint16_t
   /**
    * Servo output 15 value
-   * Units: us
    */
   servo15Raw: uint16_t
   /**
    * Servo output 16 value
-   * Units: us
    */
   servo16Raw: uint16_t
 }
@@ -4558,23 +4443,19 @@ export class SetGpsGlobalOrigin extends MavLinkData {
   targetSystem: uint8_t
   /**
    * Latitude (WGS84)
-   * Units: degE7
    */
   latitude: int32_t
   /**
    * Longitude (WGS84)
-   * Units: degE7
    */
   longitude: int32_t
   /**
    * Altitude (MSL). Positive for up.
-   * Units: mm
    */
   altitude: int32_t
   /**
    * Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format
    * (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
-   * Units: us
    */
   timeUsec: uint64_t
 }
@@ -4598,23 +4479,19 @@ export class GpsGlobalOrigin extends MavLinkData {
 
   /**
    * Latitude (WGS84)
-   * Units: degE7
    */
   latitude: int32_t
   /**
    * Longitude (WGS84)
-   * Units: degE7
    */
   longitude: int32_t
   /**
    * Altitude (MSL). Positive for up.
-   * Units: mm
    */
   altitude: int32_t
   /**
    * Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format
    * (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
-   * Units: us
    */
   timeUsec: uint64_t
 }
@@ -4757,32 +4634,26 @@ export class SafetySetAllowedArea extends MavLinkData {
   frame: MavFrame
   /**
    * x position 1 / Latitude 1
-   * Units: m
    */
   p1x: float
   /**
    * y position 1 / Longitude 1
-   * Units: m
    */
   p1y: float
   /**
    * z position 1 / Altitude 1
-   * Units: m
    */
   p1z: float
   /**
    * x position 2 / Latitude 2
-   * Units: m
    */
   p2x: float
   /**
    * y position 2 / Longitude 2
-   * Units: m
    */
   p2y: float
   /**
    * z position 2 / Altitude 2
-   * Units: m
    */
   p2z: float
 }
@@ -4813,32 +4684,26 @@ export class SafetyAllowedArea extends MavLinkData {
   frame: MavFrame
   /**
    * x position 1 / Latitude 1
-   * Units: m
    */
   p1x: float
   /**
    * y position 1 / Longitude 1
-   * Units: m
    */
   p1y: float
   /**
    * z position 1 / Altitude 1
-   * Units: m
    */
   p1z: float
   /**
    * x position 2 / Latitude 2
-   * Units: m
    */
   p2x: float
   /**
    * y position 2 / Longitude 2
-   * Units: m
    */
   p2y: float
   /**
    * z position 2 / Altitude 2
-   * Units: m
    */
   p2z: float
 }
@@ -4865,7 +4730,6 @@ export class AttitudeQuaternionCov extends MavLinkData {
   /**
    * Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format
    * (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
-   * Units: us
    */
   timeUsec: uint64_t
   /**
@@ -4874,17 +4738,14 @@ export class AttitudeQuaternionCov extends MavLinkData {
   q: float[]
   /**
    * Roll angular speed
-   * Units: rad/s
    */
   rollspeed: float
   /**
    * Pitch angular speed
-   * Units: rad/s
    */
   pitchspeed: float
   /**
    * Yaw angular speed
-   * Units: rad/s
    */
   yawspeed: float
   /**
@@ -4917,42 +4778,34 @@ export class NavControllerOutput extends MavLinkData {
 
   /**
    * Current desired roll
-   * Units: deg
    */
   navRoll: float
   /**
    * Current desired pitch
-   * Units: deg
    */
   navPitch: float
   /**
    * Current desired heading
-   * Units: deg
    */
   navBearing: int16_t
   /**
    * Bearing to current waypoint/target
-   * Units: deg
    */
   targetBearing: int16_t
   /**
    * Distance to active waypoint
-   * Units: m
    */
   wpDist: uint16_t
   /**
    * Current altitude error
-   * Units: m
    */
   altError: float
   /**
    * Current airspeed error
-   * Units: m/s
    */
   aspdError: float
   /**
    * Current crosstrack error on x-y plane
-   * Units: m
    */
   xtrackError: float
 }
@@ -4986,7 +4839,6 @@ export class GlobalPositionIntCov extends MavLinkData {
   /**
    * Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format
    * (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
-   * Units: us
    */
   timeUsec: uint64_t
   /**
@@ -4995,37 +4847,30 @@ export class GlobalPositionIntCov extends MavLinkData {
   estimatorType: MavEstimatorType
   /**
    * Latitude
-   * Units: degE7
    */
   lat: int32_t
   /**
    * Longitude
-   * Units: degE7
    */
   lon: int32_t
   /**
    * Altitude in meters above MSL
-   * Units: mm
    */
   alt: int32_t
   /**
    * Altitude above ground
-   * Units: mm
    */
   relativeAlt: int32_t
   /**
    * Ground X Speed (Latitude)
-   * Units: m/s
    */
   vx: float
   /**
    * Ground Y Speed (Longitude)
-   * Units: m/s
    */
   vy: float
   /**
    * Ground Z Speed (Altitude)
-   * Units: m/s
    */
   vz: float
   /**
@@ -5064,7 +4909,6 @@ export class LocalPositionNedCov extends MavLinkData {
   /**
    * Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format
    * (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
-   * Units: us
    */
   timeUsec: uint64_t
   /**
@@ -5073,47 +4917,38 @@ export class LocalPositionNedCov extends MavLinkData {
   estimatorType: MavEstimatorType
   /**
    * X Position
-   * Units: m
    */
   x: float
   /**
    * Y Position
-   * Units: m
    */
   y: float
   /**
    * Z Position
-   * Units: m
    */
   z: float
   /**
    * X Speed
-   * Units: m/s
    */
   vx: float
   /**
    * Y Speed
-   * Units: m/s
    */
   vy: float
   /**
    * Z Speed
-   * Units: m/s
    */
   vz: float
   /**
    * X Acceleration
-   * Units: m/s/s
    */
   ax: float
   /**
    * Y Acceleration
-   * Units: m/s/s
    */
   ay: float
   /**
    * Z Acceleration
-   * Units: m/s/s
    */
   az: float
   /**
@@ -5161,7 +4996,6 @@ export class RcChannels extends MavLinkData {
 
   /**
    * Timestamp (time since system boot).
-   * Units: ms
    */
   timeBootMs: uint32_t
   /**
@@ -5172,92 +5006,74 @@ export class RcChannels extends MavLinkData {
   chancount: uint8_t
   /**
    * RC channel 1 value.
-   * Units: us
    */
   chan1Raw: uint16_t
   /**
    * RC channel 2 value.
-   * Units: us
    */
   chan2Raw: uint16_t
   /**
    * RC channel 3 value.
-   * Units: us
    */
   chan3Raw: uint16_t
   /**
    * RC channel 4 value.
-   * Units: us
    */
   chan4Raw: uint16_t
   /**
    * RC channel 5 value.
-   * Units: us
    */
   chan5Raw: uint16_t
   /**
    * RC channel 6 value.
-   * Units: us
    */
   chan6Raw: uint16_t
   /**
    * RC channel 7 value.
-   * Units: us
    */
   chan7Raw: uint16_t
   /**
    * RC channel 8 value.
-   * Units: us
    */
   chan8Raw: uint16_t
   /**
    * RC channel 9 value.
-   * Units: us
    */
   chan9Raw: uint16_t
   /**
    * RC channel 10 value.
-   * Units: us
    */
   chan10Raw: uint16_t
   /**
    * RC channel 11 value.
-   * Units: us
    */
   chan11Raw: uint16_t
   /**
    * RC channel 12 value.
-   * Units: us
    */
   chan12Raw: uint16_t
   /**
    * RC channel 13 value.
-   * Units: us
    */
   chan13Raw: uint16_t
   /**
    * RC channel 14 value.
-   * Units: us
    */
   chan14Raw: uint16_t
   /**
    * RC channel 15 value.
-   * Units: us
    */
   chan15Raw: uint16_t
   /**
    * RC channel 16 value.
-   * Units: us
    */
   chan16Raw: uint16_t
   /**
    * RC channel 17 value.
-   * Units: us
    */
   chan17Raw: uint16_t
   /**
    * RC channel 18 value.
-   * Units: us
    */
   chan18Raw: uint16_t
   /**
@@ -5300,7 +5116,6 @@ export class RequestDataStream extends MavLinkData {
   reqStreamId: uint8_t
   /**
    * The requested message rate
-   * Units: Hz
    */
   reqMessageRate: uint16_t
   /**
@@ -5332,7 +5147,6 @@ export class DataStream extends MavLinkData {
   streamId: uint8_t
   /**
    * The message rate
-   * Units: Hz
    */
   messageRate: uint16_t
   /**
@@ -5469,109 +5283,91 @@ export class RcChannelsOverride extends MavLinkData {
   /**
    * RC channel 1 value. A value of UINT16_MAX means to ignore this field. A value of 0 means to release
    * this channel back to the RC radio.
-   * Units: us
    */
   chan1Raw: uint16_t
   /**
    * RC channel 2 value. A value of UINT16_MAX means to ignore this field. A value of 0 means to release
    * this channel back to the RC radio.
-   * Units: us
    */
   chan2Raw: uint16_t
   /**
    * RC channel 3 value. A value of UINT16_MAX means to ignore this field. A value of 0 means to release
    * this channel back to the RC radio.
-   * Units: us
    */
   chan3Raw: uint16_t
   /**
    * RC channel 4 value. A value of UINT16_MAX means to ignore this field. A value of 0 means to release
    * this channel back to the RC radio.
-   * Units: us
    */
   chan4Raw: uint16_t
   /**
    * RC channel 5 value. A value of UINT16_MAX means to ignore this field. A value of 0 means to release
    * this channel back to the RC radio.
-   * Units: us
    */
   chan5Raw: uint16_t
   /**
    * RC channel 6 value. A value of UINT16_MAX means to ignore this field. A value of 0 means to release
    * this channel back to the RC radio.
-   * Units: us
    */
   chan6Raw: uint16_t
   /**
    * RC channel 7 value. A value of UINT16_MAX means to ignore this field. A value of 0 means to release
    * this channel back to the RC radio.
-   * Units: us
    */
   chan7Raw: uint16_t
   /**
    * RC channel 8 value. A value of UINT16_MAX means to ignore this field. A value of 0 means to release
    * this channel back to the RC radio.
-   * Units: us
    */
   chan8Raw: uint16_t
   /**
    * RC channel 9 value. A value of 0 or UINT16_MAX means to ignore this field. A value of UINT16_MAX-1
    * means to release this channel back to the RC radio.
-   * Units: us
    */
   chan9Raw: uint16_t
   /**
    * RC channel 10 value. A value of 0 or UINT16_MAX means to ignore this field. A value of UINT16_MAX-1
    * means to release this channel back to the RC radio.
-   * Units: us
    */
   chan10Raw: uint16_t
   /**
    * RC channel 11 value. A value of 0 or UINT16_MAX means to ignore this field. A value of UINT16_MAX-1
    * means to release this channel back to the RC radio.
-   * Units: us
    */
   chan11Raw: uint16_t
   /**
    * RC channel 12 value. A value of 0 or UINT16_MAX means to ignore this field. A value of UINT16_MAX-1
    * means to release this channel back to the RC radio.
-   * Units: us
    */
   chan12Raw: uint16_t
   /**
    * RC channel 13 value. A value of 0 or UINT16_MAX means to ignore this field. A value of UINT16_MAX-1
    * means to release this channel back to the RC radio.
-   * Units: us
    */
   chan13Raw: uint16_t
   /**
    * RC channel 14 value. A value of 0 or UINT16_MAX means to ignore this field. A value of UINT16_MAX-1
    * means to release this channel back to the RC radio.
-   * Units: us
    */
   chan14Raw: uint16_t
   /**
    * RC channel 15 value. A value of 0 or UINT16_MAX means to ignore this field. A value of UINT16_MAX-1
    * means to release this channel back to the RC radio.
-   * Units: us
    */
   chan15Raw: uint16_t
   /**
    * RC channel 16 value. A value of 0 or UINT16_MAX means to ignore this field. A value of UINT16_MAX-1
    * means to release this channel back to the RC radio.
-   * Units: us
    */
   chan16Raw: uint16_t
   /**
    * RC channel 17 value. A value of 0 or UINT16_MAX means to ignore this field. A value of UINT16_MAX-1
    * means to release this channel back to the RC radio.
-   * Units: us
    */
   chan17Raw: uint16_t
   /**
    * RC channel 18 value. A value of 0 or UINT16_MAX means to ignore this field. A value of UINT16_MAX-1
    * means to release this channel back to the RC radio.
-   * Units: us
    */
   chan18Raw: uint16_t
 }
@@ -5693,32 +5489,26 @@ export class VfrHud extends MavLinkData {
    * Vehicle speed in form appropriate for vehicle type. For standard aircraft this is typically
    * calibrated airspeed (CAS) or indicated airspeed (IAS) - either of which can be used by a pilot to
    * estimate stall speed.
-   * Units: m/s
    */
   airspeed: float
   /**
    * Current ground speed.
-   * Units: m/s
    */
   groundspeed: float
   /**
    * Current heading in compass units (0-360, 0=north).
-   * Units: deg
    */
   heading: int16_t
   /**
    * Current throttle setting (0 to 100).
-   * Units: %
    */
   throttle: uint16_t
   /**
    * Current altitude (MSL).
-   * Units: m
    */
   alt: float
   /**
    * Current climb rate.
-   * Units: m/s
    */
   climb: float
 }
@@ -5979,22 +5769,18 @@ export class ManualSetpoint extends MavLinkData {
 
   /**
    * Timestamp (time since system boot).
-   * Units: ms
    */
   timeBootMs: uint32_t
   /**
    * Desired roll rate
-   * Units: rad/s
    */
   roll: float
   /**
    * Desired pitch rate
-   * Units: rad/s
    */
   pitch: float
   /**
    * Desired yaw rate
-   * Units: rad/s
    */
   yaw: float
   /**
@@ -6036,7 +5822,6 @@ export class SetAttitudeTarget extends MavLinkData {
 
   /**
    * Timestamp (time since system boot).
-   * Units: ms
    */
   timeBootMs: uint32_t
   /**
@@ -6057,17 +5842,14 @@ export class SetAttitudeTarget extends MavLinkData {
   q: float[]
   /**
    * Body roll rate
-   * Units: rad/s
    */
   bodyRollRate: float
   /**
    * Body pitch rate
-   * Units: rad/s
    */
   bodyPitchRate: float
   /**
    * Body yaw rate
-   * Units: rad/s
    */
   bodyYawRate: float
   /**
@@ -6103,7 +5885,6 @@ export class AttitudeTarget extends MavLinkData {
 
   /**
    * Timestamp (time since system boot).
-   * Units: ms
    */
   timeBootMs: uint32_t
   /**
@@ -6116,17 +5897,14 @@ export class AttitudeTarget extends MavLinkData {
   q: float[]
   /**
    * Body roll rate
-   * Units: rad/s
    */
   bodyRollRate: float
   /**
    * Body pitch rate
-   * Units: rad/s
    */
   bodyPitchRate: float
   /**
    * Body yaw rate
-   * Units: rad/s
    */
   bodyYawRate: float
   /**
@@ -6166,7 +5944,6 @@ export class SetPositionTargetLocalNed extends MavLinkData {
 
   /**
    * Timestamp (time since system boot).
-   * Units: ms
    */
   timeBootMs: uint32_t
   /**
@@ -6188,57 +5965,46 @@ export class SetPositionTargetLocalNed extends MavLinkData {
   typeMask: PositionTargetTypemask
   /**
    * X Position in NED frame
-   * Units: m
    */
   x: float
   /**
    * Y Position in NED frame
-   * Units: m
    */
   y: float
   /**
    * Z Position in NED frame (note, altitude is negative in NED)
-   * Units: m
    */
   z: float
   /**
    * X velocity in NED frame
-   * Units: m/s
    */
   vx: float
   /**
    * Y velocity in NED frame
-   * Units: m/s
    */
   vy: float
   /**
    * Z velocity in NED frame
-   * Units: m/s
    */
   vz: float
   /**
    * X acceleration or force (if bit 10 of type_mask is set) in NED frame in meter / s^2 or N
-   * Units: m/s/s
    */
   afx: float
   /**
    * Y acceleration or force (if bit 10 of type_mask is set) in NED frame in meter / s^2 or N
-   * Units: m/s/s
    */
   afy: float
   /**
    * Z acceleration or force (if bit 10 of type_mask is set) in NED frame in meter / s^2 or N
-   * Units: m/s/s
    */
   afz: float
   /**
    * yaw setpoint
-   * Units: rad
    */
   yaw: float
   /**
    * yaw rate setpoint
-   * Units: rad/s
    */
   yawRate: float
 }
@@ -6273,7 +6039,6 @@ export class PositionTargetLocalNed extends MavLinkData {
 
   /**
    * Timestamp (time since system boot).
-   * Units: ms
    */
   timeBootMs: uint32_t
   /**
@@ -6287,57 +6052,46 @@ export class PositionTargetLocalNed extends MavLinkData {
   typeMask: PositionTargetTypemask
   /**
    * X Position in NED frame
-   * Units: m
    */
   x: float
   /**
    * Y Position in NED frame
-   * Units: m
    */
   y: float
   /**
    * Z Position in NED frame (note, altitude is negative in NED)
-   * Units: m
    */
   z: float
   /**
    * X velocity in NED frame
-   * Units: m/s
    */
   vx: float
   /**
    * Y velocity in NED frame
-   * Units: m/s
    */
   vy: float
   /**
    * Z velocity in NED frame
-   * Units: m/s
    */
   vz: float
   /**
    * X acceleration or force (if bit 10 of type_mask is set) in NED frame in meter / s^2 or N
-   * Units: m/s/s
    */
   afx: float
   /**
    * Y acceleration or force (if bit 10 of type_mask is set) in NED frame in meter / s^2 or N
-   * Units: m/s/s
    */
   afy: float
   /**
    * Z acceleration or force (if bit 10 of type_mask is set) in NED frame in meter / s^2 or N
-   * Units: m/s/s
    */
   afz: float
   /**
    * yaw setpoint
-   * Units: rad
    */
   yaw: float
   /**
    * yaw rate setpoint
-   * Units: rad/s
    */
   yawRate: float
 }
@@ -6375,7 +6129,6 @@ export class SetPositionTargetGlobalInt extends MavLinkData {
    * Timestamp (time since system boot). The rationale for the timestamp in the setpoint is to allow the
    * system to compensate for the transport delay of the setpoint. This allows the system to compensate
    * processing latency.
-   * Units: ms
    */
   timeBootMs: uint32_t
   /**
@@ -6397,57 +6150,46 @@ export class SetPositionTargetGlobalInt extends MavLinkData {
   typeMask: PositionTargetTypemask
   /**
    * X Position in WGS84 frame
-   * Units: degE7
    */
   latInt: int32_t
   /**
    * Y Position in WGS84 frame
-   * Units: degE7
    */
   lonInt: int32_t
   /**
    * Altitude (MSL, Relative to home, or AGL - depending on frame)
-   * Units: m
    */
   alt: float
   /**
    * X velocity in NED frame
-   * Units: m/s
    */
   vx: float
   /**
    * Y velocity in NED frame
-   * Units: m/s
    */
   vy: float
   /**
    * Z velocity in NED frame
-   * Units: m/s
    */
   vz: float
   /**
    * X acceleration or force (if bit 10 of type_mask is set) in NED frame in meter / s^2 or N
-   * Units: m/s/s
    */
   afx: float
   /**
    * Y acceleration or force (if bit 10 of type_mask is set) in NED frame in meter / s^2 or N
-   * Units: m/s/s
    */
   afy: float
   /**
    * Z acceleration or force (if bit 10 of type_mask is set) in NED frame in meter / s^2 or N
-   * Units: m/s/s
    */
   afz: float
   /**
    * yaw setpoint
-   * Units: rad
    */
   yaw: float
   /**
    * yaw rate setpoint
-   * Units: rad/s
    */
   yawRate: float
 }
@@ -6484,7 +6226,6 @@ export class PositionTargetGlobalInt extends MavLinkData {
    * Timestamp (time since system boot). The rationale for the timestamp in the setpoint is to allow the
    * system to compensate for the transport delay of the setpoint. This allows the system to compensate
    * processing latency.
-   * Units: ms
    */
   timeBootMs: uint32_t
   /**
@@ -6498,57 +6239,46 @@ export class PositionTargetGlobalInt extends MavLinkData {
   typeMask: PositionTargetTypemask
   /**
    * X Position in WGS84 frame
-   * Units: degE7
    */
   latInt: int32_t
   /**
    * Y Position in WGS84 frame
-   * Units: degE7
    */
   lonInt: int32_t
   /**
    * Altitude (MSL, AGL or relative to home altitude, depending on frame)
-   * Units: m
    */
   alt: float
   /**
    * X velocity in NED frame
-   * Units: m/s
    */
   vx: float
   /**
    * Y velocity in NED frame
-   * Units: m/s
    */
   vy: float
   /**
    * Z velocity in NED frame
-   * Units: m/s
    */
   vz: float
   /**
    * X acceleration or force (if bit 10 of type_mask is set) in NED frame in meter / s^2 or N
-   * Units: m/s/s
    */
   afx: float
   /**
    * Y acceleration or force (if bit 10 of type_mask is set) in NED frame in meter / s^2 or N
-   * Units: m/s/s
    */
   afy: float
   /**
    * Z acceleration or force (if bit 10 of type_mask is set) in NED frame in meter / s^2 or N
-   * Units: m/s/s
    */
   afz: float
   /**
    * yaw setpoint
-   * Units: rad
    */
   yaw: float
   /**
    * yaw rate setpoint
-   * Units: rad/s
    */
   yawRate: float
 }
@@ -6576,37 +6306,30 @@ export class LocalPositionNedSystemGlobalOffset extends MavLinkData {
 
   /**
    * Timestamp (time since system boot).
-   * Units: ms
    */
   timeBootMs: uint32_t
   /**
    * X Position
-   * Units: m
    */
   x: float
   /**
    * Y Position
-   * Units: m
    */
   y: float
   /**
    * Z Position
-   * Units: m
    */
   z: float
   /**
    * Roll
-   * Units: rad
    */
   roll: float
   /**
    * Pitch
-   * Units: rad
    */
   pitch: float
   /**
    * Yaw
-   * Units: rad
    */
   yaw: float
 }
@@ -6645,82 +6368,66 @@ export class HilState extends MavLinkData {
   /**
    * Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format
    * (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
-   * Units: us
    */
   timeUsec: uint64_t
   /**
    * Roll angle
-   * Units: rad
    */
   roll: float
   /**
    * Pitch angle
-   * Units: rad
    */
   pitch: float
   /**
    * Yaw angle
-   * Units: rad
    */
   yaw: float
   /**
    * Body frame roll / phi angular speed
-   * Units: rad/s
    */
   rollspeed: float
   /**
    * Body frame pitch / theta angular speed
-   * Units: rad/s
    */
   pitchspeed: float
   /**
    * Body frame yaw / psi angular speed
-   * Units: rad/s
    */
   yawspeed: float
   /**
    * Latitude
-   * Units: degE7
    */
   lat: int32_t
   /**
    * Longitude
-   * Units: degE7
    */
   lon: int32_t
   /**
    * Altitude
-   * Units: mm
    */
   alt: int32_t
   /**
    * Ground X Speed (Latitude)
-   * Units: cm/s
    */
   vx: int16_t
   /**
    * Ground Y Speed (Longitude)
-   * Units: cm/s
    */
   vy: int16_t
   /**
    * Ground Z Speed (Altitude)
-   * Units: cm/s
    */
   vz: int16_t
   /**
    * X acceleration
-   * Units: mG
    */
   xacc: int16_t
   /**
    * Y acceleration
-   * Units: mG
    */
   yacc: int16_t
   /**
    * Z acceleration
-   * Units: mG
    */
   zacc: int16_t
 }
@@ -6751,7 +6458,6 @@ export class HilControls extends MavLinkData {
   /**
    * Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format
    * (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
-   * Units: us
    */
   timeUsec: uint64_t
   /**
@@ -6827,67 +6533,54 @@ export class HilRcInputsRaw extends MavLinkData {
   /**
    * Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format
    * (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
-   * Units: us
    */
   timeUsec: uint64_t
   /**
    * RC channel 1 value
-   * Units: us
    */
   chan1Raw: uint16_t
   /**
    * RC channel 2 value
-   * Units: us
    */
   chan2Raw: uint16_t
   /**
    * RC channel 3 value
-   * Units: us
    */
   chan3Raw: uint16_t
   /**
    * RC channel 4 value
-   * Units: us
    */
   chan4Raw: uint16_t
   /**
    * RC channel 5 value
-   * Units: us
    */
   chan5Raw: uint16_t
   /**
    * RC channel 6 value
-   * Units: us
    */
   chan6Raw: uint16_t
   /**
    * RC channel 7 value
-   * Units: us
    */
   chan7Raw: uint16_t
   /**
    * RC channel 8 value
-   * Units: us
    */
   chan8Raw: uint16_t
   /**
    * RC channel 9 value
-   * Units: us
    */
   chan9Raw: uint16_t
   /**
    * RC channel 10 value
-   * Units: us
    */
   chan10Raw: uint16_t
   /**
    * RC channel 11 value
-   * Units: us
    */
   chan11Raw: uint16_t
   /**
    * RC channel 12 value
-   * Units: us
    */
   chan12Raw: uint16_t
   /**
@@ -6917,7 +6610,6 @@ export class HilActuatorControls extends MavLinkData {
   /**
    * Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format
    * (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
-   * Units: us
    */
   timeUsec: uint64_t
   /**
@@ -6959,7 +6651,6 @@ export class OpticalFlow extends MavLinkData {
   /**
    * Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format
    * (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
-   * Units: us
    */
   timeUsec: uint64_t
   /**
@@ -6968,22 +6659,18 @@ export class OpticalFlow extends MavLinkData {
   sensorId: uint8_t
   /**
    * Flow in x-sensor direction
-   * Units: dpix
    */
   flowX: int16_t
   /**
    * Flow in y-sensor direction
-   * Units: dpix
    */
   flowY: int16_t
   /**
    * Flow in x-sensor direction, angular-speed compensated
-   * Units: m/s
    */
   flowCompMX: float
   /**
    * Flow in y-sensor direction, angular-speed compensated
-   * Units: m/s
    */
   flowCompMY: float
   /**
@@ -6992,17 +6679,14 @@ export class OpticalFlow extends MavLinkData {
   quality: uint8_t
   /**
    * Ground distance. Positive value: distance known. Negative value: Unknown distance
-   * Units: m
    */
   groundDistance: float
   /**
    * Flow rate about X axis
-   * Units: rad/s
    */
   flowRateX: float
   /**
    * Flow rate about Y axis
-   * Units: rad/s
    */
   flowRateY: float
 }
@@ -7030,37 +6714,30 @@ export class GlobalVisionPositionEstimate extends MavLinkData {
 
   /**
    * Timestamp (UNIX time or since system boot)
-   * Units: us
    */
   usec: uint64_t
   /**
    * Global X position
-   * Units: m
    */
   x: float
   /**
    * Global Y position
-   * Units: m
    */
   y: float
   /**
    * Global Z position
-   * Units: m
    */
   z: float
   /**
    * Roll angle
-   * Units: rad
    */
   roll: float
   /**
    * Pitch angle
-   * Units: rad
    */
   pitch: float
   /**
    * Yaw angle
-   * Units: rad
    */
   yaw: float
   /**
@@ -7100,37 +6777,30 @@ export class VisionPositionEstimate extends MavLinkData {
 
   /**
    * Timestamp (UNIX time or time since system boot)
-   * Units: us
    */
   usec: uint64_t
   /**
    * Local X position
-   * Units: m
    */
   x: float
   /**
    * Local Y position
-   * Units: m
    */
   y: float
   /**
    * Local Z position
-   * Units: m
    */
   z: float
   /**
    * Roll angle
-   * Units: rad
    */
   roll: float
   /**
    * Pitch angle
-   * Units: rad
    */
   pitch: float
   /**
    * Yaw angle
-   * Units: rad
    */
   yaw: float
   /**
@@ -7167,22 +6837,18 @@ export class VisionSpeedEstimate extends MavLinkData {
 
   /**
    * Timestamp (UNIX time or time since system boot)
-   * Units: us
    */
   usec: uint64_t
   /**
    * Global X speed
-   * Units: m/s
    */
   x: float
   /**
    * Global Y speed
-   * Units: m/s
    */
   y: float
   /**
    * Global Z speed
-   * Units: m/s
    */
   z: float
   /**
@@ -7220,37 +6886,30 @@ export class ViconPositionEstimate extends MavLinkData {
 
   /**
    * Timestamp (UNIX time or time since system boot)
-   * Units: us
    */
   usec: uint64_t
   /**
    * Global X position
-   * Units: m
    */
   x: float
   /**
    * Global Y position
-   * Units: m
    */
   y: float
   /**
    * Global Z position
-   * Units: m
    */
   z: float
   /**
    * Roll angle
-   * Units: rad
    */
   roll: float
   /**
    * Pitch angle
-   * Units: rad
    */
   pitch: float
   /**
    * Yaw angle
-   * Units: rad
    */
   yaw: float
   /**
@@ -7292,62 +6951,50 @@ export class HighresImu extends MavLinkData {
   /**
    * Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format
    * (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
-   * Units: us
    */
   timeUsec: uint64_t
   /**
    * X acceleration
-   * Units: m/s/s
    */
   xacc: float
   /**
    * Y acceleration
-   * Units: m/s/s
    */
   yacc: float
   /**
    * Z acceleration
-   * Units: m/s/s
    */
   zacc: float
   /**
    * Angular speed around X axis
-   * Units: rad/s
    */
   xgyro: float
   /**
    * Angular speed around Y axis
-   * Units: rad/s
    */
   ygyro: float
   /**
    * Angular speed around Z axis
-   * Units: rad/s
    */
   zgyro: float
   /**
    * X Magnetic field
-   * Units: gauss
    */
   xmag: float
   /**
    * Y Magnetic field
-   * Units: gauss
    */
   ymag: float
   /**
    * Z Magnetic field
-   * Units: gauss
    */
   zmag: float
   /**
    * Absolute pressure
-   * Units: hPa
    */
   absPressure: float
   /**
    * Differential pressure
-   * Units: hPa
    */
   diffPressure: float
   /**
@@ -7356,7 +7003,6 @@ export class HighresImu extends MavLinkData {
   pressureAlt: float
   /**
    * Temperature
-   * Units: degC
    */
   temperature: float
   /**
@@ -7397,7 +7043,6 @@ export class OpticalFlowRad extends MavLinkData {
   /**
    * Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format
    * (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
-   * Units: us
    */
   timeUsec: uint64_t
   /**
@@ -7407,39 +7052,32 @@ export class OpticalFlowRad extends MavLinkData {
   /**
    * Integration time. Divide integrated_x and integrated_y by the integration time to obtain average
    * flow. The integration time also indicates the.
-   * Units: us
    */
   integrationTimeUs: uint32_t
   /**
    * Flow around X axis (Sensor RH rotation about the X axis induces a positive flow. Sensor linear
    * motion along the positive Y axis induces a negative flow.)
-   * Units: rad
    */
   integratedX: float
   /**
    * Flow around Y axis (Sensor RH rotation about the Y axis induces a positive flow. Sensor linear
    * motion along the positive X axis induces a positive flow.)
-   * Units: rad
    */
   integratedY: float
   /**
    * RH rotation around X axis
-   * Units: rad
    */
   integratedXgyro: float
   /**
    * RH rotation around Y axis
-   * Units: rad
    */
   integratedYgyro: float
   /**
    * RH rotation around Z axis
-   * Units: rad
    */
   integratedZgyro: float
   /**
    * Temperature
-   * Units: cdegC
    */
   temperature: int16_t
   /**
@@ -7448,13 +7086,11 @@ export class OpticalFlowRad extends MavLinkData {
   quality: uint8_t
   /**
    * Time since the distance was sampled.
-   * Units: us
    */
   timeDeltaDistanceUs: uint32_t
   /**
    * Distance to the center of the flow field. Positive value (including zero): distance known. Negative
    * value: Unknown distance.
-   * Units: m
    */
   distance: float
 }
@@ -7490,62 +7126,50 @@ export class HilSensor extends MavLinkData {
   /**
    * Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format
    * (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
-   * Units: us
    */
   timeUsec: uint64_t
   /**
    * X acceleration
-   * Units: m/s/s
    */
   xacc: float
   /**
    * Y acceleration
-   * Units: m/s/s
    */
   yacc: float
   /**
    * Z acceleration
-   * Units: m/s/s
    */
   zacc: float
   /**
    * Angular speed around X axis in body frame
-   * Units: rad/s
    */
   xgyro: float
   /**
    * Angular speed around Y axis in body frame
-   * Units: rad/s
    */
   ygyro: float
   /**
    * Angular speed around Z axis in body frame
-   * Units: rad/s
    */
   zgyro: float
   /**
    * X Magnetic field
-   * Units: gauss
    */
   xmag: float
   /**
    * Y Magnetic field
-   * Units: gauss
    */
   ymag: float
   /**
    * Z Magnetic field
-   * Units: gauss
    */
   zmag: float
   /**
    * Absolute pressure
-   * Units: hPa
    */
   absPressure: float
   /**
    * Differential pressure (airspeed)
-   * Units: hPa
    */
   diffPressure: float
   /**
@@ -7554,7 +7178,6 @@ export class HilSensor extends MavLinkData {
   pressureAlt: float
   /**
    * Temperature
-   * Units: degC
    */
   temperature: float
   /**
@@ -7630,47 +7253,38 @@ export class SimState extends MavLinkData {
   yaw: float
   /**
    * X acceleration
-   * Units: m/s/s
    */
   xacc: float
   /**
    * Y acceleration
-   * Units: m/s/s
    */
   yacc: float
   /**
    * Z acceleration
-   * Units: m/s/s
    */
   zacc: float
   /**
    * Angular speed around X axis
-   * Units: rad/s
    */
   xgyro: float
   /**
    * Angular speed around Y axis
-   * Units: rad/s
    */
   ygyro: float
   /**
    * Angular speed around Z axis
-   * Units: rad/s
    */
   zgyro: float
   /**
    * Latitude
-   * Units: deg
    */
   lat: float
   /**
    * Longitude
-   * Units: deg
    */
   lon: float
   /**
    * Altitude
-   * Units: m
    */
   alt: float
   /**
@@ -7683,17 +7297,14 @@ export class SimState extends MavLinkData {
   stdDevVert: float
   /**
    * True velocity in north direction in earth-fixed NED frame
-   * Units: m/s
    */
   vn: float
   /**
    * True velocity in east direction in earth-fixed NED frame
-   * Units: m/s
    */
   ve: float
   /**
    * True velocity in down direction in earth-fixed NED frame
-   * Units: m/s
    */
   vd: float
 }
@@ -7729,7 +7340,6 @@ export class RadioStatus extends MavLinkData {
   remrssi: uint8_t
   /**
    * Remaining free transmitter buffer space.
-   * Units: %
    */
   txbuf: uint8_t
   /**
@@ -7830,7 +7440,6 @@ export class CameraTrigger extends MavLinkData {
   /**
    * Timestamp for image frame (UNIX Epoch time or time since system boot). The receiving end can infer
    * timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
-   * Units: us
    */
   timeUsec: uint64_t
   /**
@@ -7871,7 +7480,6 @@ export class HilGps extends MavLinkData {
   /**
    * Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format
    * (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
-   * Units: us
    */
   timeUsec: uint64_t
   /**
@@ -7881,17 +7489,14 @@ export class HilGps extends MavLinkData {
   fixType: uint8_t
   /**
    * Latitude (WGS84)
-   * Units: degE7
    */
   lat: int32_t
   /**
    * Longitude (WGS84)
-   * Units: degE7
    */
   lon: int32_t
   /**
    * Altitude (MSL). Positive for up.
-   * Units: mm
    */
   alt: int32_t
   /**
@@ -7904,28 +7509,23 @@ export class HilGps extends MavLinkData {
   epv: uint16_t
   /**
    * GPS ground speed. If unknown, set to: UINT16_MAX
-   * Units: cm/s
    */
   vel: uint16_t
   /**
    * GPS velocity in north direction in earth-fixed NED frame
-   * Units: cm/s
    */
   vn: int16_t
   /**
    * GPS velocity in east direction in earth-fixed NED frame
-   * Units: cm/s
    */
   ve: int16_t
   /**
    * GPS velocity in down direction in earth-fixed NED frame
-   * Units: cm/s
    */
   vd: int16_t
   /**
    * Course over ground (NOT heading, but direction of movement), 0.0..359.99 degrees. If unknown, set
    * to: UINT16_MAX
-   * Units: cdeg
    */
   cog: uint16_t
   /**
@@ -7938,7 +7538,6 @@ export class HilGps extends MavLinkData {
   id: uint8_t
   /**
    * Yaw of vehicle relative to Earth's North, zero means not available, use 36000 for north
-   * Units: cdeg
    */
   yaw: uint16_t
 }
@@ -7970,7 +7569,6 @@ export class HilOpticalFlow extends MavLinkData {
   /**
    * Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format
    * (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
-   * Units: us
    */
   timeUsec: uint64_t
   /**
@@ -7980,39 +7578,32 @@ export class HilOpticalFlow extends MavLinkData {
   /**
    * Integration time. Divide integrated_x and integrated_y by the integration time to obtain average
    * flow. The integration time also indicates the.
-   * Units: us
    */
   integrationTimeUs: uint32_t
   /**
    * Flow in radians around X axis (Sensor RH rotation about the X axis induces a positive flow. Sensor
    * linear motion along the positive Y axis induces a negative flow.)
-   * Units: rad
    */
   integratedX: float
   /**
    * Flow in radians around Y axis (Sensor RH rotation about the Y axis induces a positive flow. Sensor
    * linear motion along the positive X axis induces a positive flow.)
-   * Units: rad
    */
   integratedY: float
   /**
    * RH rotation around X axis
-   * Units: rad
    */
   integratedXgyro: float
   /**
    * RH rotation around Y axis
-   * Units: rad
    */
   integratedYgyro: float
   /**
    * RH rotation around Z axis
-   * Units: rad
    */
   integratedZgyro: float
   /**
    * Temperature
-   * Units: cdegC
    */
   temperature: int16_t
   /**
@@ -8021,13 +7612,11 @@ export class HilOpticalFlow extends MavLinkData {
   quality: uint8_t
   /**
    * Time since the distance was sampled.
-   * Units: us
    */
   timeDeltaDistanceUs: uint32_t
   /**
    * Distance to the center of the flow field. Positive value (including zero): distance known. Negative
    * value: Unknown distance.
-   * Units: m
    */
   distance: float
 }
@@ -8064,7 +7653,6 @@ export class HilStateQuaternion extends MavLinkData {
   /**
    * Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format
    * (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
-   * Units: us
    */
   timeUsec: uint64_t
   /**
@@ -8074,72 +7662,58 @@ export class HilStateQuaternion extends MavLinkData {
   attitudeQuaternion: float[]
   /**
    * Body frame roll / phi angular speed
-   * Units: rad/s
    */
   rollspeed: float
   /**
    * Body frame pitch / theta angular speed
-   * Units: rad/s
    */
   pitchspeed: float
   /**
    * Body frame yaw / psi angular speed
-   * Units: rad/s
    */
   yawspeed: float
   /**
    * Latitude
-   * Units: degE7
    */
   lat: int32_t
   /**
    * Longitude
-   * Units: degE7
    */
   lon: int32_t
   /**
    * Altitude
-   * Units: mm
    */
   alt: int32_t
   /**
    * Ground X Speed (Latitude)
-   * Units: cm/s
    */
   vx: int16_t
   /**
    * Ground Y Speed (Longitude)
-   * Units: cm/s
    */
   vy: int16_t
   /**
    * Ground Z Speed (Altitude)
-   * Units: cm/s
    */
   vz: int16_t
   /**
    * Indicated airspeed
-   * Units: cm/s
    */
   indAirspeed: uint16_t
   /**
    * True airspeed
-   * Units: cm/s
    */
   trueAirspeed: uint16_t
   /**
    * X acceleration
-   * Units: mG
    */
   xacc: int16_t
   /**
    * Y acceleration
-   * Units: mG
    */
   yacc: int16_t
   /**
    * Z acceleration
-   * Units: mG
    */
   zacc: int16_t
 }
@@ -8170,57 +7744,46 @@ export class ScaledImu2 extends MavLinkData {
 
   /**
    * Timestamp (time since system boot).
-   * Units: ms
    */
   timeBootMs: uint32_t
   /**
    * X acceleration
-   * Units: mG
    */
   xacc: int16_t
   /**
    * Y acceleration
-   * Units: mG
    */
   yacc: int16_t
   /**
    * Z acceleration
-   * Units: mG
    */
   zacc: int16_t
   /**
    * Angular speed around X axis
-   * Units: mrad/s
    */
   xgyro: int16_t
   /**
    * Angular speed around Y axis
-   * Units: mrad/s
    */
   ygyro: int16_t
   /**
    * Angular speed around Z axis
-   * Units: mrad/s
    */
   zgyro: int16_t
   /**
    * X Magnetic field
-   * Units: mgauss
    */
   xmag: int16_t
   /**
    * Y Magnetic field
-   * Units: mgauss
    */
   ymag: int16_t
   /**
    * Z Magnetic field
-   * Units: mgauss
    */
   zmag: int16_t
   /**
    * Temperature, 0: IMU does not provide temperature values. If the IMU is at 0C it must send 1 (0.01C).
-   * Units: cdegC
    */
   temperature: int16_t
 }
@@ -8292,12 +7855,10 @@ export class LogEntry extends MavLinkData {
   lastLogNum: uint16_t
   /**
    * UTC timestamp of log since 1970, or 0 if not available
-   * Units: s
    */
   timeUtc: uint32_t
   /**
    * Size of the log (may be approximate)
-   * Units: bytes
    */
   size: uint32_t
 }
@@ -8337,7 +7898,6 @@ export class LogRequestData extends MavLinkData {
   ofs: uint32_t
   /**
    * Number of bytes
-   * Units: bytes
    */
   count: uint32_t
 }
@@ -8368,7 +7928,6 @@ export class LogData extends MavLinkData {
   ofs: uint32_t
   /**
    * Number of bytes (zero for end of log)
-   * Units: bytes
    */
   count: uint8_t
   /**
@@ -8451,7 +8010,6 @@ export class GpsInjectData extends MavLinkData {
   targetComponent: uint8_t
   /**
    * Data length
-   * Units: bytes
    */
   len: uint8_t
   /**
@@ -8493,7 +8051,6 @@ export class Gps2Raw extends MavLinkData {
   /**
    * Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format
    * (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
-   * Units: us
    */
   timeUsec: uint64_t
   /**
@@ -8502,17 +8059,14 @@ export class Gps2Raw extends MavLinkData {
   fixType: GpsFixType
   /**
    * Latitude (WGS84)
-   * Units: degE7
    */
   lat: int32_t
   /**
    * Longitude (WGS84)
-   * Units: degE7
    */
   lon: int32_t
   /**
    * Altitude (MSL). Positive for up.
-   * Units: mm
    */
   alt: int32_t
   /**
@@ -8525,13 +8079,11 @@ export class Gps2Raw extends MavLinkData {
   epv: uint16_t
   /**
    * GPS ground speed. If unknown, set to: UINT16_MAX
-   * Units: cm/s
    */
   vel: uint16_t
   /**
    * Course over ground (NOT heading, but direction of movement): 0.0..359.99 degrees. If unknown, set
    * to: UINT16_MAX
-   * Units: cdeg
    */
   cog: uint16_t
   /**
@@ -8544,38 +8096,31 @@ export class Gps2Raw extends MavLinkData {
   dgpsNumch: uint8_t
   /**
    * Age of DGPS info
-   * Units: ms
    */
   dgpsAge: uint32_t
   /**
    * Yaw in earth frame from north. Use 0 if this GPS does not provide yaw. Use UINT16_MAX if this GPS is
    * configured to provide yaw and is currently unable to provide it. Use 36000 for north.
-   * Units: cdeg
    */
   yaw: uint16_t
   /**
    * Altitude (above WGS84, EGM96 ellipsoid). Positive for up.
-   * Units: mm
    */
   altEllipsoid: int32_t
   /**
    * Position uncertainty.
-   * Units: mm
    */
   hAcc: uint32_t
   /**
    * Altitude uncertainty.
-   * Units: mm
    */
   vAcc: uint32_t
   /**
    * Speed uncertainty.
-   * Units: mm
    */
   velAcc: uint32_t
   /**
    * Heading / track uncertainty
-   * Units: degE5
    */
   hdgAcc: uint32_t
 }
@@ -8597,12 +8142,10 @@ export class PowerStatus extends MavLinkData {
 
   /**
    * 5V rail voltage.
-   * Units: mV
    */
   Vcc: uint16_t
   /**
    * Servo rail voltage.
-   * Units: mV
    */
   Vservo: uint16_t
   /**
@@ -8644,17 +8187,14 @@ export class SerialControl extends MavLinkData {
   flags: SerialControlFlag
   /**
    * Timeout for reply data
-   * Units: ms
    */
   timeout: uint16_t
   /**
    * Baudrate of transfer. Zero means no change.
-   * Units: bits/s
    */
   baudrate: uint32_t
   /**
    * how many bytes in this transfer
-   * Units: bytes
    */
   count: uint8_t
   /**
@@ -8698,7 +8238,6 @@ export class GpsRtk extends MavLinkData {
 
   /**
    * Time since boot of last baseline message received.
-   * Units: ms
    */
   timeLastBaselineMs: uint32_t
   /**
@@ -8711,7 +8250,6 @@ export class GpsRtk extends MavLinkData {
   wn: uint16_t
   /**
    * GPS Time of Week of last baseline
-   * Units: ms
    */
   tow: uint32_t
   /**
@@ -8720,7 +8258,6 @@ export class GpsRtk extends MavLinkData {
   rtkHealth: uint8_t
   /**
    * Rate of baseline messages being received by GPS
-   * Units: Hz
    */
   rtkRate: uint8_t
   /**
@@ -8733,17 +8270,14 @@ export class GpsRtk extends MavLinkData {
   baselineCoordsType: RtkBaselineCoordinateSystem
   /**
    * Current baseline in ECEF x or NED north component.
-   * Units: mm
    */
   baselineAMm: int32_t
   /**
    * Current baseline in ECEF y or NED east component.
-   * Units: mm
    */
   baselineBMm: int32_t
   /**
    * Current baseline in ECEF z or NED down component.
-   * Units: mm
    */
   baselineCMm: int32_t
   /**
@@ -8783,7 +8317,6 @@ export class Gps2Rtk extends MavLinkData {
 
   /**
    * Time since boot of last baseline message received.
-   * Units: ms
    */
   timeLastBaselineMs: uint32_t
   /**
@@ -8796,7 +8329,6 @@ export class Gps2Rtk extends MavLinkData {
   wn: uint16_t
   /**
    * GPS Time of Week of last baseline
-   * Units: ms
    */
   tow: uint32_t
   /**
@@ -8805,7 +8337,6 @@ export class Gps2Rtk extends MavLinkData {
   rtkHealth: uint8_t
   /**
    * Rate of baseline messages being received by GPS
-   * Units: Hz
    */
   rtkRate: uint8_t
   /**
@@ -8818,17 +8349,14 @@ export class Gps2Rtk extends MavLinkData {
   baselineCoordsType: RtkBaselineCoordinateSystem
   /**
    * Current baseline in ECEF x or NED north component.
-   * Units: mm
    */
   baselineAMm: int32_t
   /**
    * Current baseline in ECEF y or NED east component.
-   * Units: mm
    */
   baselineBMm: int32_t
   /**
    * Current baseline in ECEF z or NED down component.
-   * Units: mm
    */
   baselineCMm: int32_t
   /**
@@ -8867,57 +8395,46 @@ export class ScaledImu3 extends MavLinkData {
 
   /**
    * Timestamp (time since system boot).
-   * Units: ms
    */
   timeBootMs: uint32_t
   /**
    * X acceleration
-   * Units: mG
    */
   xacc: int16_t
   /**
    * Y acceleration
-   * Units: mG
    */
   yacc: int16_t
   /**
    * Z acceleration
-   * Units: mG
    */
   zacc: int16_t
   /**
    * Angular speed around X axis
-   * Units: mrad/s
    */
   xgyro: int16_t
   /**
    * Angular speed around Y axis
-   * Units: mrad/s
    */
   ygyro: int16_t
   /**
    * Angular speed around Z axis
-   * Units: mrad/s
    */
   zgyro: int16_t
   /**
    * X Magnetic field
-   * Units: mgauss
    */
   xmag: int16_t
   /**
    * Y Magnetic field
-   * Units: mgauss
    */
   ymag: int16_t
   /**
    * Z Magnetic field
-   * Units: mgauss
    */
   zmag: int16_t
   /**
    * Temperature, 0: IMU does not provide temperature values. If the IMU is at 0C it must send 1 (0.01C).
-   * Units: cdegC
    */
   temperature: int16_t
 }
@@ -8948,7 +8465,6 @@ export class DataTransmissionHandshake extends MavLinkData {
   type: MavlinkDataStreamType
   /**
    * total data size (set on ACK only).
-   * Units: bytes
    */
   size: uint32_t
   /**
@@ -8966,12 +8482,10 @@ export class DataTransmissionHandshake extends MavLinkData {
   /**
    * Payload size per packet (normally 253 byte, see DATA field size in message ENCAPSULATED_DATA) (set
    * on ACK only).
-   * Units: bytes
    */
   payload: uint8_t
   /**
    * JPEG quality. Values: [1-100].
-   * Units: %
    */
   jpgQuality: uint8_t
 }
@@ -9027,22 +8541,18 @@ export class DistanceSensor extends MavLinkData {
 
   /**
    * Timestamp (time since system boot).
-   * Units: ms
    */
   timeBootMs: uint32_t
   /**
    * Minimum distance the sensor can measure
-   * Units: cm
    */
   minDistance: uint16_t
   /**
    * Maximum distance the sensor can measure
-   * Units: cm
    */
   maxDistance: uint16_t
   /**
    * Current distance reading
-   * Units: cm
    */
   currentDistance: uint16_t
   /**
@@ -9061,19 +8571,16 @@ export class DistanceSensor extends MavLinkData {
   orientation: MavSensorOrientation
   /**
    * Measurement variance. Max standard deviation is 6cm. UINT8_MAX if unknown.
-   * Units: cm^2
    */
   covariance: uint8_t
   /**
    * Horizontal Field of View (angle) where the distance measurement is valid and the field of view is
    * known. Otherwise this is set to 0.
-   * Units: rad
    */
   horizontalFov: float
   /**
    * Vertical Field of View (angle) where the distance measurement is valid and the field of view is
    * known. Otherwise this is set to 0.
-   * Units: rad
    */
   verticalFov: float
   /**
@@ -9086,7 +8593,6 @@ export class DistanceSensor extends MavLinkData {
    * Signal quality of the sensor. Specific to each sensor type, representing the relation of the signal
    * strength with the target reflectivity, distance, size or aspect, but normalised as a percentage. 0 =
    * unknown/unset signal quality, 1 = invalid signal, 100 = perfect signal.
-   * Units: %
    */
   signalQuality: uint8_t
 }
@@ -9110,17 +8616,14 @@ export class TerrainRequest extends MavLinkData {
 
   /**
    * Latitude of SW corner of first grid
-   * Units: degE7
    */
   lat: int32_t
   /**
    * Longitude of SW corner of first grid
-   * Units: degE7
    */
   lon: int32_t
   /**
    * Grid spacing
-   * Units: m
    */
   gridSpacing: uint16_t
   /**
@@ -9149,17 +8652,14 @@ export class TerrainData extends MavLinkData {
 
   /**
    * Latitude of SW corner of first grid
-   * Units: degE7
    */
   lat: int32_t
   /**
    * Longitude of SW corner of first grid
-   * Units: degE7
    */
   lon: int32_t
   /**
    * Grid spacing
-   * Units: m
    */
   gridSpacing: uint16_t
   /**
@@ -9168,7 +8668,6 @@ export class TerrainData extends MavLinkData {
   gridbit: uint8_t
   /**
    * Terrain data MSL
-   * Units: m
    */
   data: int16_t[]
 }
@@ -9190,12 +8689,10 @@ export class TerrainCheck extends MavLinkData {
 
   /**
    * Latitude
-   * Units: degE7
    */
   lat: int32_t
   /**
    * Longitude
-   * Units: degE7
    */
   lon: int32_t
 }
@@ -9223,12 +8720,10 @@ export class TerrainReport extends MavLinkData {
 
   /**
    * Latitude
-   * Units: degE7
    */
   lat: int32_t
   /**
    * Longitude
-   * Units: degE7
    */
   lon: int32_t
   /**
@@ -9237,12 +8732,10 @@ export class TerrainReport extends MavLinkData {
   spacing: uint16_t
   /**
    * Terrain height MSL
-   * Units: m
    */
   terrainHeight: float
   /**
    * Current vehicle height above lat/lon terrain height
-   * Units: m
    */
   currentHeight: float
   /**
@@ -9274,27 +8767,22 @@ export class ScaledPressure2 extends MavLinkData {
 
   /**
    * Timestamp (time since system boot).
-   * Units: ms
    */
   timeBootMs: uint32_t
   /**
    * Absolute pressure
-   * Units: hPa
    */
   pressAbs: float
   /**
    * Differential pressure
-   * Units: hPa
    */
   pressDiff: float
   /**
    * Absolute pressure temperature
-   * Units: cdegC
    */
   temperature: int16_t
   /**
    * Differential pressure temperature (0, if not available). Report values of 0 (or 1) as 1 cdegC.
-   * Units: cdegC
    */
   temperaturePressDiff: int16_t
 }
@@ -9320,7 +8808,6 @@ export class MotionCaptureAttPos extends MavLinkData {
   /**
    * Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format
    * (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
-   * Units: us
    */
   timeUsec: uint64_t
   /**
@@ -9329,17 +8816,14 @@ export class MotionCaptureAttPos extends MavLinkData {
   q: float[]
   /**
    * X position (NED)
-   * Units: m
    */
   x: float
   /**
    * Y position (NED)
-   * Units: m
    */
   y: float
   /**
    * Z position (NED)
-   * Units: m
    */
   z: float
   /**
@@ -9370,7 +8854,6 @@ export class SetActuatorControlTarget extends MavLinkData {
   /**
    * Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format
    * (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
-   * Units: us
    */
   timeUsec: uint64_t
   /**
@@ -9413,7 +8896,6 @@ export class ActuatorControlTarget extends MavLinkData {
   /**
    * Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format
    * (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
-   * Units: us
    */
   timeUsec: uint64_t
   /**
@@ -9452,7 +8934,6 @@ export class Altitude extends MavLinkData {
   /**
    * Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format
    * (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
-   * Units: us
    */
   timeUsec: uint64_t
   /**
@@ -9460,7 +8941,6 @@ export class Altitude extends MavLinkData {
    * the local altitude change). The only guarantee on this field is that it will never be reset and is
    * consistent within a flight. The recommended value for this field is the uncorrected barometric
    * altitude at boot time. This altitude will also drift and vary between flights.
-   * Units: m
    */
   altitudeMonotonic: float
   /**
@@ -9468,31 +8948,26 @@ export class Altitude extends MavLinkData {
    * events like GPS lock or when a new QNH value is set). It should be the altitude to which global
    * altitude waypoints are compared to. Note that it is *not* the GPS altitude, however, most GPS
    * modules already output MSL by default and not the WGS84 altitude.
-   * Units: m
    */
   altitudeAmsl: float
   /**
    * This is the local altitude in the local coordinate frame. It is not the altitude above home, but in
    * reference to the coordinate origin (0, 0, 0). It is up-positive.
-   * Units: m
    */
   altitudeLocal: float
   /**
    * This is the altitude above the home position. It resets on each change of the current home position.
-   * Units: m
    */
   altitudeRelative: float
   /**
    * This is the altitude above terrain. It might be fed by a terrain database or an altimeter. Values
    * smaller than -1000 should be interpreted as unknown.
-   * Units: m
    */
   altitudeTerrain: float
   /**
    * This is not the altitude, but the clear space below the system according to the fused clearance
    * estimate. It generally should max out at the maximum range of e.g. the laser altimeter. It is
    * generally a moving target. A negative value indicates no measurement available.
-   * Units: m
    */
   bottomClearance: float
 }
@@ -9557,27 +9032,22 @@ export class ScaledPressure3 extends MavLinkData {
 
   /**
    * Timestamp (time since system boot).
-   * Units: ms
    */
   timeBootMs: uint32_t
   /**
    * Absolute pressure
-   * Units: hPa
    */
   pressAbs: float
   /**
    * Differential pressure
-   * Units: hPa
    */
   pressDiff: float
   /**
    * Absolute pressure temperature
-   * Units: cdegC
    */
   temperature: int16_t
   /**
    * Differential pressure temperature (0, if not available). Report values of 0 (or 1) as 1 cdegC.
-   * Units: cdegC
    */
   temperaturePressDiff: int16_t
 }
@@ -9607,7 +9077,6 @@ export class FollowTarget extends MavLinkData {
 
   /**
    * Timestamp (time since system boot).
-   * Units: ms
    */
   timestamp: uint64_t
   /**
@@ -9616,27 +9085,22 @@ export class FollowTarget extends MavLinkData {
   estCapabilities: uint8_t
   /**
    * Latitude (WGS84)
-   * Units: degE7
    */
   lat: int32_t
   /**
    * Longitude (WGS84)
-   * Units: degE7
    */
   lon: int32_t
   /**
    * Altitude (MSL)
-   * Units: m
    */
   alt: float
   /**
    * target velocity (0,0,0) for unknown
-   * Units: m/s
    */
   vel: float[]
   /**
    * linear target acceleration (0,0,0) for unknown
-   * Units: m/s/s
    */
   acc: float[]
   /**
@@ -9689,57 +9153,46 @@ export class ControlSystemState extends MavLinkData {
   /**
    * Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format
    * (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
-   * Units: us
    */
   timeUsec: uint64_t
   /**
    * X acceleration in body frame
-   * Units: m/s/s
    */
   xAcc: float
   /**
    * Y acceleration in body frame
-   * Units: m/s/s
    */
   yAcc: float
   /**
    * Z acceleration in body frame
-   * Units: m/s/s
    */
   zAcc: float
   /**
    * X velocity in body frame
-   * Units: m/s
    */
   xVel: float
   /**
    * Y velocity in body frame
-   * Units: m/s
    */
   yVel: float
   /**
    * Z velocity in body frame
-   * Units: m/s
    */
   zVel: float
   /**
    * X position in local frame
-   * Units: m
    */
   xPos: float
   /**
    * Y position in local frame
-   * Units: m
    */
   yPos: float
   /**
    * Z position in local frame
-   * Units: m
    */
   zPos: float
   /**
    * Airspeed, set to -1 if unknown
-   * Units: m/s
    */
   airspeed: float
   /**
@@ -9756,17 +9209,14 @@ export class ControlSystemState extends MavLinkData {
   q: float[]
   /**
    * Angular rate in roll axis
-   * Units: rad/s
    */
   rollRate: float
   /**
    * Angular rate in pitch axis
-   * Units: rad/s
    */
   pitchRate: float
   /**
    * Angular rate in yaw axis
-   * Units: rad/s
    */
   yawRate: float
 }
@@ -9812,7 +9262,6 @@ export class BatteryStatus extends MavLinkData {
   type: MavBatteryType
   /**
    * Temperature of the battery. INT16_MAX for unknown temperature.
-   * Units: cdegC
    */
   temperature: int16_t
   /**
@@ -9822,32 +9271,26 @@ export class BatteryStatus extends MavLinkData {
    * 0, with all others set to UINT16_MAX. If the voltage of the battery is greater than (UINT16_MAX -
    * 1), then cell 0 should be set to (UINT16_MAX - 1), and cell 1 to the remaining voltage. This can be
    * extended to multiple cells if the total voltage is greater than 2 * (UINT16_MAX - 1).
-   * Units: mV
    */
   voltages: uint16_t[]
   /**
    * Battery current, -1: autopilot does not measure the current
-   * Units: cA
    */
   currentBattery: int16_t
   /**
    * Consumed charge, -1: autopilot does not provide consumption estimate
-   * Units: mAh
    */
   currentConsumed: int32_t
   /**
    * Consumed energy, -1: autopilot does not provide energy consumption estimate
-   * Units: hJ
    */
   energyConsumed: int32_t
   /**
    * Remaining battery energy. Values: [0-100], -1: autopilot does not estimate the remaining battery.
-   * Units: %
    */
   batteryRemaining: int8_t
   /**
    * Remaining battery time, 0: autopilot does not provide remaining battery time estimate
-   * Units: s
    */
   timeRemaining: int32_t
   /**
@@ -9858,7 +9301,6 @@ export class BatteryStatus extends MavLinkData {
    * Battery voltages for cells 11 to 14. Cells above the valid cell count for this battery should have a
    * value of 0, where zero indicates not supported (note, this is different than for the voltages field
    * and allows empty byte truncation). If the measured value is 0 then 1 should be sent instead.
-   * Units: mV
    */
   voltagesExt: uint16_t[]
   /**
@@ -9985,7 +9427,6 @@ export class LandingTarget extends MavLinkData {
   /**
    * Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format
    * (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
-   * Units: us
    */
   timeUsec: uint64_t
   /**
@@ -9998,42 +9439,34 @@ export class LandingTarget extends MavLinkData {
   frame: MavFrame
   /**
    * X-axis angular offset of the target from the center of the image
-   * Units: rad
    */
   angleX: float
   /**
    * Y-axis angular offset of the target from the center of the image
-   * Units: rad
    */
   angleY: float
   /**
    * Distance to the target from the vehicle
-   * Units: m
    */
   distance: float
   /**
    * Size of target along x-axis
-   * Units: rad
    */
   sizeX: float
   /**
    * Size of target along y-axis
-   * Units: rad
    */
   sizeY: float
   /**
    * X Position of the landing target in MAV_FRAME
-   * Units: m
    */
   x: float
   /**
    * Y Position of the landing target in MAV_FRAME
-   * Units: m
    */
   y: float
   /**
    * Z Position of the landing target in MAV_FRAME
-   * Units: m
    */
   z: float
   /**
@@ -10082,7 +9515,6 @@ export class FenceStatus extends MavLinkData {
   breachType: FenceBreach
   /**
    * Time (since boot) of last breach.
-   * Units: ms
    */
   breachTime: uint32_t
   /**
@@ -10139,7 +9571,6 @@ export class MagCalReport extends MavLinkData {
   autosaved: uint8_t
   /**
    * RMS milligauss residuals.
-   * Units: mgauss
    */
   fitness: float
   /**
@@ -10239,67 +9670,54 @@ export class EfiStatus extends MavLinkData {
   rpm: float
   /**
    * Fuel consumed
-   * Units: cm^3
    */
   fuelConsumed: float
   /**
    * Fuel flow rate
-   * Units: cm^3/min
    */
   fuelFlow: float
   /**
    * Engine load
-   * Units: %
    */
   engineLoad: float
   /**
    * Throttle position
-   * Units: %
    */
   throttlePosition: float
   /**
    * Spark dwell time
-   * Units: ms
    */
   sparkDwellTime: float
   /**
    * Barometric pressure
-   * Units: kPa
    */
   barometricPressure: float
   /**
    * Intake manifold pressure(
-   * Units: kPa
    */
   intakeManifoldPressure: float
   /**
    * Intake manifold temperature
-   * Units: degC
    */
   intakeManifoldTemperature: float
   /**
    * Cylinder head temperature
-   * Units: degC
    */
   cylinderHeadTemperature: float
   /**
    * Ignition timing (Crank angle degrees)
-   * Units: deg
    */
   ignitionTiming: float
   /**
    * Injection time
-   * Units: ms
    */
   injectionTime: float
   /**
    * Exhaust gas temperature
-   * Units: degC
    */
   exhaustGasTemperature: float
   /**
    * Output throttle
-   * Units: %
    */
   throttleOut: float
   /**
@@ -10341,7 +9759,6 @@ export class EstimatorStatus extends MavLinkData {
   /**
    * Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format
    * (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
-   * Units: us
    */
   timeUsec: uint64_t
   /**
@@ -10374,12 +9791,10 @@ export class EstimatorStatus extends MavLinkData {
   tasRatio: float
   /**
    * Horizontal position 1-STD accuracy relative to the EKF local origin
-   * Units: m
    */
   posHorizAccuracy: float
   /**
    * Vertical position 1-STD accuracy relative to the EKF local origin
-   * Units: m
    */
   posVertAccuracy: float
 }
@@ -10408,47 +9823,38 @@ export class WindCov extends MavLinkData {
   /**
    * Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format
    * (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
-   * Units: us
    */
   timeUsec: uint64_t
   /**
    * Wind in X (NED) direction
-   * Units: m/s
    */
   windX: float
   /**
    * Wind in Y (NED) direction
-   * Units: m/s
    */
   windY: float
   /**
    * Wind in Z (NED) direction
-   * Units: m/s
    */
   windZ: float
   /**
    * Variability of the wind in XY. RMS of a 1 Hz lowpassed wind estimate.
-   * Units: m/s
    */
   varHoriz: float
   /**
    * Variability of the wind in Z. RMS of a 1 Hz lowpassed wind estimate.
-   * Units: m/s
    */
   varVert: float
   /**
    * Altitude (MSL) that this measurement was taken at
-   * Units: m
    */
   windAlt: float
   /**
    * Horizontal speed 1-STD accuracy
-   * Units: m
    */
   horizAccuracy: float
   /**
    * Vertical speed 1-STD accuracy
-   * Units: m
    */
   vertAccuracy: float
 }
@@ -10488,7 +9894,6 @@ export class GpsInput extends MavLinkData {
   /**
    * Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format
    * (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
-   * Units: us
    */
   timeUsec: uint64_t
   /**
@@ -10501,7 +9906,6 @@ export class GpsInput extends MavLinkData {
   ignoreFlags: GpsInputIgnoreFlags
   /**
    * GPS time (from start of GPS week)
-   * Units: ms
    */
   timeWeekMs: uint32_t
   /**
@@ -10514,17 +9918,14 @@ export class GpsInput extends MavLinkData {
   fixType: uint8_t
   /**
    * Latitude (WGS84)
-   * Units: degE7
    */
   lat: int32_t
   /**
    * Longitude (WGS84)
-   * Units: degE7
    */
   lon: int32_t
   /**
    * Altitude (MSL). Positive for up.
-   * Units: m
    */
   alt: float
   /**
@@ -10537,32 +9938,26 @@ export class GpsInput extends MavLinkData {
   vdop: float
   /**
    * GPS velocity in north direction in earth-fixed NED frame
-   * Units: m/s
    */
   vn: float
   /**
    * GPS velocity in east direction in earth-fixed NED frame
-   * Units: m/s
    */
   ve: float
   /**
    * GPS velocity in down direction in earth-fixed NED frame
-   * Units: m/s
    */
   vd: float
   /**
    * GPS speed accuracy
-   * Units: m/s
    */
   speedAccuracy: float
   /**
    * GPS horizontal accuracy
-   * Units: m
    */
   horizAccuracy: float
   /**
    * GPS vertical accuracy
-   * Units: m
    */
   vertAccuracy: float
   /**
@@ -10571,7 +9966,6 @@ export class GpsInput extends MavLinkData {
   satellitesVisible: uint8_t
   /**
    * Yaw of vehicle relative to Earth's North, zero means not available, use 36000 for north
-   * Units: cdeg
    */
   yaw: uint16_t
 }
@@ -10604,7 +9998,6 @@ export class GpsRtcmData extends MavLinkData {
   flags: uint8_t
   /**
    * data length
-   * Units: bytes
    */
   len: uint8_t
   /**
@@ -10665,67 +10058,54 @@ export class HighLatency extends MavLinkData {
   landedState: MavLandedState
   /**
    * roll
-   * Units: cdeg
    */
   roll: int16_t
   /**
    * pitch
-   * Units: cdeg
    */
   pitch: int16_t
   /**
    * heading
-   * Units: cdeg
    */
   heading: uint16_t
   /**
    * throttle (percentage)
-   * Units: %
    */
   throttle: int8_t
   /**
    * heading setpoint
-   * Units: cdeg
    */
   headingSp: int16_t
   /**
    * Latitude
-   * Units: degE7
    */
   latitude: int32_t
   /**
    * Longitude
-   * Units: degE7
    */
   longitude: int32_t
   /**
    * Altitude above mean sea level
-   * Units: m
    */
   altitudeAmsl: int16_t
   /**
    * Altitude setpoint relative to the home position
-   * Units: m
    */
   altitudeSp: int16_t
   /**
    * airspeed
-   * Units: m/s
    */
   airspeed: uint8_t
   /**
    * airspeed setpoint
-   * Units: m/s
    */
   airspeedSp: uint8_t
   /**
    * groundspeed
-   * Units: m/s
    */
   groundspeed: uint8_t
   /**
    * climb rate
-   * Units: m/s
    */
   climbRate: int8_t
   /**
@@ -10738,17 +10118,14 @@ export class HighLatency extends MavLinkData {
   gpsFixType: GpsFixType
   /**
    * Remaining battery (percentage)
-   * Units: %
    */
   batteryRemaining: uint8_t
   /**
    * Autopilot temperature (degrees C)
-   * Units: degC
    */
   temperature: int8_t
   /**
    * Air temperature (degrees C) from airspeed sensor
-   * Units: degC
    */
   temperatureAir: int8_t
   /**
@@ -10762,7 +10139,6 @@ export class HighLatency extends MavLinkData {
   wpNum: uint8_t
   /**
    * distance to target
-   * Units: m
    */
   wpDistance: uint16_t
 }
@@ -10808,7 +10184,6 @@ export class HighLatency2 extends MavLinkData {
 
   /**
    * Timestamp (milliseconds since boot or Unix epoch)
-   * Units: ms
    */
   timestamp: uint32_t
   /**
@@ -10825,92 +10200,74 @@ export class HighLatency2 extends MavLinkData {
   customMode: uint16_t
   /**
    * Latitude
-   * Units: degE7
    */
   latitude: int32_t
   /**
    * Longitude
-   * Units: degE7
    */
   longitude: int32_t
   /**
    * Altitude above mean sea level
-   * Units: m
    */
   altitude: int16_t
   /**
    * Altitude setpoint
-   * Units: m
    */
   targetAltitude: int16_t
   /**
    * Heading
-   * Units: deg/2
    */
   heading: uint8_t
   /**
    * Heading setpoint
-   * Units: deg/2
    */
   targetHeading: uint8_t
   /**
    * Distance to target waypoint or position
-   * Units: dam
    */
   targetDistance: uint16_t
   /**
    * Throttle
-   * Units: %
    */
   throttle: uint8_t
   /**
    * Airspeed
-   * Units: m/s*5
    */
   airspeed: uint8_t
   /**
    * Airspeed setpoint
-   * Units: m/s*5
    */
   airspeedSp: uint8_t
   /**
    * Groundspeed
-   * Units: m/s*5
    */
   groundspeed: uint8_t
   /**
    * Windspeed
-   * Units: m/s*5
    */
   windspeed: uint8_t
   /**
    * Wind heading
-   * Units: deg/2
    */
   windHeading: uint8_t
   /**
    * Maximum error horizontal position since last message
-   * Units: dm
    */
   eph: uint8_t
   /**
    * Maximum error vertical position since last message
-   * Units: dm
    */
   epv: uint8_t
   /**
    * Air temperature from airspeed sensor
-   * Units: degC
    */
   temperatureAir: int8_t
   /**
    * Maximum climb rate magnitude since last message
-   * Units: dm/s
    */
   climbRate: int8_t
   /**
    * Battery level (-1 if field not provided).
-   * Units: %
    */
   battery: int8_t
   /**
@@ -10957,7 +10314,6 @@ export class Vibration extends MavLinkData {
   /**
    * Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format
    * (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
-   * Units: us
    */
   timeUsec: uint64_t
   /**
@@ -11018,32 +10374,26 @@ export class HomePosition extends MavLinkData {
 
   /**
    * Latitude (WGS84)
-   * Units: degE7
    */
   latitude: int32_t
   /**
    * Longitude (WGS84)
-   * Units: degE7
    */
   longitude: int32_t
   /**
    * Altitude (MSL). Positive for up.
-   * Units: mm
    */
   altitude: int32_t
   /**
    * Local X position of this position in the local coordinate frame
-   * Units: m
    */
   x: float
   /**
    * Local Y position of this position in the local coordinate frame
-   * Units: m
    */
   y: float
   /**
    * Local Z position of this position in the local coordinate frame
-   * Units: m
    */
   z: float
   /**
@@ -11056,7 +10406,6 @@ export class HomePosition extends MavLinkData {
    * their takeoff path. Grass-landing fixed wing aircraft should set it the same way as multicopters.
    * Runway-landing fixed wing aircraft should set it to the opposite direction of the takeoff, assuming
    * the takeoff happened from the threshold / touchdown zone.
-   * Units: m
    */
   approachX: float
   /**
@@ -11064,7 +10413,6 @@ export class HomePosition extends MavLinkData {
    * their takeoff path. Grass-landing fixed wing aircraft should set it the same way as multicopters.
    * Runway-landing fixed wing aircraft should set it to the opposite direction of the takeoff, assuming
    * the takeoff happened from the threshold / touchdown zone.
-   * Units: m
    */
   approachY: float
   /**
@@ -11072,13 +10420,11 @@ export class HomePosition extends MavLinkData {
    * their takeoff path. Grass-landing fixed wing aircraft should set it the same way as multicopters.
    * Runway-landing fixed wing aircraft should set it to the opposite direction of the takeoff, assuming
    * the takeoff happened from the threshold / touchdown zone.
-   * Units: m
    */
   approachZ: float
   /**
    * Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format
    * (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
-   * Units: us
    */
   timeUsec: uint64_t
 }
@@ -11119,32 +10465,26 @@ export class SetHomePosition extends MavLinkData {
   targetSystem: uint8_t
   /**
    * Latitude (WGS84)
-   * Units: degE7
    */
   latitude: int32_t
   /**
    * Longitude (WGS84)
-   * Units: degE7
    */
   longitude: int32_t
   /**
    * Altitude (MSL). Positive for up.
-   * Units: mm
    */
   altitude: int32_t
   /**
    * Local X position of this position in the local coordinate frame
-   * Units: m
    */
   x: float
   /**
    * Local Y position of this position in the local coordinate frame
-   * Units: m
    */
   y: float
   /**
    * Local Z position of this position in the local coordinate frame
-   * Units: m
    */
   z: float
   /**
@@ -11157,7 +10497,6 @@ export class SetHomePosition extends MavLinkData {
    * their takeoff path. Grass-landing fixed wing aircraft should set it the same way as multicopters.
    * Runway-landing fixed wing aircraft should set it to the opposite direction of the takeoff, assuming
    * the takeoff happened from the threshold / touchdown zone.
-   * Units: m
    */
   approachX: float
   /**
@@ -11165,7 +10504,6 @@ export class SetHomePosition extends MavLinkData {
    * their takeoff path. Grass-landing fixed wing aircraft should set it the same way as multicopters.
    * Runway-landing fixed wing aircraft should set it to the opposite direction of the takeoff, assuming
    * the takeoff happened from the threshold / touchdown zone.
-   * Units: m
    */
   approachY: float
   /**
@@ -11173,13 +10511,11 @@ export class SetHomePosition extends MavLinkData {
    * their takeoff path. Grass-landing fixed wing aircraft should set it the same way as multicopters.
    * Runway-landing fixed wing aircraft should set it to the opposite direction of the takeoff, assuming
    * the takeoff happened from the threshold / touchdown zone.
-   * Units: m
    */
   approachZ: float
   /**
    * Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format
    * (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
-   * Units: us
    */
   timeUsec: uint64_t
 }
@@ -11206,7 +10542,6 @@ export class MessageInterval extends MavLinkData {
   /**
    * The interval between two messages. A value of -1 indicates this stream is disabled, 0 indicates it
    * is not available, > 0 indicates the interval at which it is sent.
-   * Units: us
    */
   intervalUs: int32_t
 }
@@ -11267,12 +10602,10 @@ export class AdsbVehicle extends MavLinkData {
   ICAOAddress: uint32_t
   /**
    * Latitude
-   * Units: degE7
    */
   lat: int32_t
   /**
    * Longitude
-   * Units: degE7
    */
   lon: int32_t
   /**
@@ -11281,22 +10614,18 @@ export class AdsbVehicle extends MavLinkData {
   altitudeType: AdsbAltitudeType
   /**
    * Altitude(ASL)
-   * Units: mm
    */
   altitude: int32_t
   /**
    * Course over ground
-   * Units: cdeg
    */
   heading: uint16_t
   /**
    * The horizontal velocity
-   * Units: cm/s
    */
   horVelocity: uint16_t
   /**
    * The vertical velocity. Positive is up
-   * Units: cm/s
    */
   verVelocity: int16_t
   /**
@@ -11309,7 +10638,6 @@ export class AdsbVehicle extends MavLinkData {
   emitterType: AdsbEmitterType
   /**
    * Time since last communication in seconds
-   * Units: s
    */
   tslc: uint8_t
   /**
@@ -11359,17 +10687,14 @@ export class Collision extends MavLinkData {
   threatLevel: MavCollisionThreatLevel
   /**
    * Estimated time until collision occurs
-   * Units: s
    */
   timeToMinimumDelta: float
   /**
    * Closest vertical distance between vehicle and object
-   * Units: m
    */
   altitudeMinimumDelta: float
   /**
    * Closest horizontal distance between vehicle and object
-   * Units: m
    */
   horizontalMinimumDelta: float
 }
@@ -11484,7 +10809,6 @@ export class DebugVect extends MavLinkData {
   /**
    * Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format
    * (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
-   * Units: us
    */
   timeUsec: uint64_t
   /**
@@ -11519,7 +10843,6 @@ export class NamedValueFloat extends MavLinkData {
 
   /**
    * Timestamp (time since system boot).
-   * Units: ms
    */
   timeBootMs: uint32_t
   /**
@@ -11550,7 +10873,6 @@ export class NamedValueInt extends MavLinkData {
 
   /**
    * Timestamp (time since system boot).
-   * Units: ms
    */
   timeBootMs: uint32_t
   /**
@@ -11621,7 +10943,6 @@ export class Debug extends MavLinkData {
 
   /**
    * Timestamp (time since system boot).
-   * Units: ms
    */
   timeBootMs: uint32_t
   /**
@@ -11686,12 +11007,10 @@ export class ButtonChange extends MavLinkData {
 
   /**
    * Timestamp (time since system boot).
-   * Units: ms
    */
   timeBootMs: uint32_t
   /**
    * Time of last change of button state.
-   * Units: ms
    */
   lastChangeMs: uint32_t
   /**
@@ -11763,7 +11082,6 @@ export class CameraInformation extends MavLinkData {
 
   /**
    * Timestamp (time since system boot).
-   * Units: ms
    */
   timeBootMs: uint32_t
   /**
@@ -11781,27 +11099,22 @@ export class CameraInformation extends MavLinkData {
   firmwareVersion: uint32_t
   /**
    * Focal length
-   * Units: mm
    */
   focalLength: float
   /**
    * Image sensor size horizontal
-   * Units: mm
    */
   sensorSizeH: float
   /**
    * Image sensor size vertical
-   * Units: mm
    */
   sensorSizeV: float
   /**
    * Horizontal image resolution
-   * Units: pix
    */
   resolutionH: uint16_t
   /**
    * Vertical image resolution
-   * Units: pix
    */
   resolutionV: uint16_t
   /**
@@ -11844,7 +11157,6 @@ export class CameraSettings extends MavLinkData {
 
   /**
    * Timestamp (time since system boot).
-   * Units: ms
    */
   timeBootMs: uint32_t
   /**
@@ -11890,7 +11202,6 @@ export class StorageInformation extends MavLinkData {
 
   /**
    * Timestamp (time since system boot).
-   * Units: ms
    */
   timeBootMs: uint32_t
   /**
@@ -11907,27 +11218,22 @@ export class StorageInformation extends MavLinkData {
   status: StorageStatus
   /**
    * Total capacity. If storage is not ready (STORAGE_STATUS_READY) value will be ignored.
-   * Units: MiB
    */
   totalCapacity: float
   /**
    * Used capacity. If storage is not ready (STORAGE_STATUS_READY) value will be ignored.
-   * Units: MiB
    */
   usedCapacity: float
   /**
    * Available storage capacity. If storage is not ready (STORAGE_STATUS_READY) value will be ignored.
-   * Units: MiB
    */
   availableCapacity: float
   /**
    * Read speed.
-   * Units: MiB/s
    */
   readSpeed: float
   /**
    * Write speed.
-   * Units: MiB/s
    */
   writeSpeed: float
   /**
@@ -11971,7 +11277,6 @@ export class CameraCaptureStatus extends MavLinkData {
 
   /**
    * Timestamp (time since system boot).
-   * Units: ms
    */
   timeBootMs: uint32_t
   /**
@@ -11985,18 +11290,15 @@ export class CameraCaptureStatus extends MavLinkData {
   videoStatus: uint8_t
   /**
    * Image capture interval
-   * Units: s
    */
   imageInterval: float
   /**
    * Elapsed time since recording started (0: Not supported/available). A GCS should compute recording
    * time and use non-zero values of this field to correct any discrepancy.
-   * Units: ms
    */
   recordingTimeMs: uint32_t
   /**
    * Available storage capacity.
-   * Units: MiB
    */
   availableCapacity: float
   /**
@@ -12037,12 +11339,10 @@ export class CameraImageCaptured extends MavLinkData {
 
   /**
    * Timestamp (time since system boot).
-   * Units: ms
    */
   timeBootMs: uint32_t
   /**
    * Timestamp (time since UNIX epoch) in UTC. 0 for unknown.
-   * Units: us
    */
   timeUtc: uint64_t
   /**
@@ -12051,22 +11351,18 @@ export class CameraImageCaptured extends MavLinkData {
   cameraId: uint8_t
   /**
    * Latitude where image was taken
-   * Units: degE7
    */
   lat: int32_t
   /**
    * Longitude where capture was taken
-   * Units: degE7
    */
   lon: int32_t
   /**
    * Altitude (MSL) where image was taken
-   * Units: mm
    */
   alt: int32_t
   /**
    * Altitude above ground
-   * Units: mm
    */
   relativeAlt: int32_t
   /**
@@ -12106,17 +11402,14 @@ export class FlightInformation extends MavLinkData {
 
   /**
    * Timestamp (time since system boot).
-   * Units: ms
    */
   timeBootMs: uint32_t
   /**
    * Timestamp at arming (time since UNIX epoch) in UTC, 0 for unknown
-   * Units: us
    */
   armingTimeUtc: uint64_t
   /**
    * Timestamp at takeoff (time since UNIX epoch) in UTC, 0 for unknown
-   * Units: us
    */
   takeoffTimeUtc: uint64_t
   /**
@@ -12146,27 +11439,22 @@ export class MountOrientation extends MavLinkData {
 
   /**
    * Timestamp (time since system boot).
-   * Units: ms
    */
   timeBootMs: uint32_t
   /**
    * Roll in global frame (set to NaN for invalid).
-   * Units: deg
    */
   roll: float
   /**
    * Pitch in global frame (set to NaN for invalid).
-   * Units: deg
    */
   pitch: float
   /**
    * Yaw relative to vehicle (set to NaN for invalid).
-   * Units: deg
    */
   yaw: float
   /**
    * Yaw in absolute frame relative to Earth's North, north is 0 (set to NaN for invalid).
-   * Units: deg
    */
   yawAbsolute: float
 }
@@ -12203,13 +11491,11 @@ export class LoggingData extends MavLinkData {
   sequence: uint16_t
   /**
    * data length
-   * Units: bytes
    */
   length: uint8_t
   /**
    * offset into data where first message starts. This can be used for recovery, when a previous message
    * got lost (set to UINT8_MAX if no start exists).
-   * Units: bytes
    */
   firstMessageOffset: uint8_t
   /**
@@ -12250,13 +11536,11 @@ export class LoggingDataAcked extends MavLinkData {
   sequence: uint16_t
   /**
    * data length
-   * Units: bytes
    */
   length: uint8_t
   /**
    * offset into data where first message starts. This can be used for recovery, when a previous message
    * got lost (set to UINT8_MAX if no start exists).
-   * Units: bytes
    */
   firstMessageOffset: uint8_t
   /**
@@ -12337,32 +11621,26 @@ export class VideoStreamInformation extends MavLinkData {
   flags: VideoStreamStatusFlags
   /**
    * Frame rate.
-   * Units: Hz
    */
   framerate: float
   /**
    * Horizontal resolution.
-   * Units: pix
    */
   resolutionH: uint16_t
   /**
    * Vertical resolution.
-   * Units: pix
    */
   resolutionV: uint16_t
   /**
    * Bit rate.
-   * Units: bits/s
    */
   bitrate: uint32_t
   /**
    * Video image rotation clockwise.
-   * Units: deg
    */
   rotation: uint16_t
   /**
    * Horizontal Field of view.
-   * Units: deg
    */
   hfov: uint16_t
   /**
@@ -12406,32 +11684,26 @@ export class VideoStreamStatus extends MavLinkData {
   flags: VideoStreamStatusFlags
   /**
    * Frame rate
-   * Units: Hz
    */
   framerate: float
   /**
    * Horizontal resolution
-   * Units: pix
    */
   resolutionH: uint16_t
   /**
    * Vertical resolution
-   * Units: pix
    */
   resolutionV: uint16_t
   /**
    * Bit rate
-   * Units: bits/s
    */
   bitrate: uint32_t
   /**
    * Video image rotation clockwise
-   * Units: deg
    */
   rotation: uint16_t
   /**
    * Horizontal Field of view
-   * Units: deg
    */
   hfov: uint16_t
 }
@@ -12461,40 +11733,33 @@ export class CameraFovStatus extends MavLinkData {
 
   /**
    * Timestamp (time since system boot).
-   * Units: ms
    */
   timeBootMs: uint32_t
   /**
    * Latitude of camera (INT32_MAX if unknown).
-   * Units: degE7
    */
   latCamera: int32_t
   /**
    * Longitude of camera (INT32_MAX if unknown).
-   * Units: degE7
    */
   lonCamera: int32_t
   /**
    * Altitude (MSL) of camera (INT32_MAX if unknown).
-   * Units: mm
    */
   altCamera: int32_t
   /**
    * Latitude of center of image (INT32_MAX if unknown, INT32_MIN if at infinity, not intersecting with
    * horizon).
-   * Units: degE7
    */
   latImage: int32_t
   /**
    * Longitude of center of image (INT32_MAX if unknown, INT32_MIN if at infinity, not intersecting with
    * horizon).
-   * Units: degE7
    */
   lonImage: int32_t
   /**
    * Altitude (MSL) of center of image (INT32_MAX if unknown, INT32_MIN if at infinity, not intersecting
    * with horizon).
-   * Units: mm
    */
   altImage: int32_t
   /**
@@ -12503,12 +11768,10 @@ export class CameraFovStatus extends MavLinkData {
   q: float[]
   /**
    * Horizontal field of view (NaN if unknown).
-   * Units: deg
    */
   hfov: float
   /**
    * Vertical field of view (NaN if unknown).
-   * Units: deg
    */
   vfov: float
 }
@@ -12617,62 +11880,50 @@ export class CameraTrackingGeoStatus extends MavLinkData {
   trackingStatus: CameraTrackingStatusFlags
   /**
    * Latitude of tracked object
-   * Units: degE7
    */
   lat: int32_t
   /**
    * Longitude of tracked object
-   * Units: degE7
    */
   lon: int32_t
   /**
    * Altitude of tracked object(AMSL, WGS84)
-   * Units: m
    */
   alt: float
   /**
    * Horizontal accuracy. NAN if unknown
-   * Units: m
    */
   hAcc: float
   /**
    * Vertical accuracy. NAN if unknown
-   * Units: m
    */
   vAcc: float
   /**
    * North velocity of tracked object. NAN if unknown
-   * Units: m/s
    */
   velN: float
   /**
    * East velocity of tracked object. NAN if unknown
-   * Units: m/s
    */
   velE: float
   /**
    * Down velocity of tracked object. NAN if unknown
-   * Units: m/s
    */
   velD: float
   /**
    * Velocity accuracy. NAN if unknown
-   * Units: m/s
    */
   velAcc: float
   /**
    * Distance between camera and tracked object. NAN if unknown
-   * Units: m
    */
   dist: float
   /**
    * Heading in radians, in NED. NAN if unknown
-   * Units: rad
    */
   hdg: float
   /**
    * Accuracy of heading, in NED. NAN if unknown
-   * Units: rad
    */
   hdgAcc: float
 }
@@ -12701,7 +11952,6 @@ export class GimbalManagerInformation extends MavLinkData {
 
   /**
    * Timestamp (time since system boot).
-   * Units: ms
    */
   timeBootMs: uint32_t
   /**
@@ -12714,32 +11964,26 @@ export class GimbalManagerInformation extends MavLinkData {
   gimbalDeviceId: uint8_t
   /**
    * Minimum hardware roll angle (positive: rolling to the right, negative: rolling to the left)
-   * Units: rad
    */
   rollMin: float
   /**
    * Maximum hardware roll angle (positive: rolling to the right, negative: rolling to the left)
-   * Units: rad
    */
   rollMax: float
   /**
    * Minimum pitch angle (positive: up, negative: down)
-   * Units: rad
    */
   pitchMin: float
   /**
    * Maximum pitch angle (positive: up, negative: down)
-   * Units: rad
    */
   pitchMax: float
   /**
    * Minimum yaw angle (positive: to the right, negative: to the left)
-   * Units: rad
    */
   yawMin: float
   /**
    * Maximum yaw angle (positive: to the right, negative: to the left)
-   * Units: rad
    */
   yawMax: float
 }
@@ -12766,7 +12010,6 @@ export class GimbalManagerStatus extends MavLinkData {
 
   /**
    * Timestamp (time since system boot).
-   * Units: ms
    */
   timeBootMs: uint32_t
   /**
@@ -12840,17 +12083,14 @@ export class GimbalManagerSetAttitude extends MavLinkData {
   q: float[]
   /**
    * X component of angular velocity, positive is rolling to the right, NaN to be ignored.
-   * Units: rad/s
    */
   angularVelocityX: float
   /**
    * Y component of angular velocity, positive is pitching up, NaN to be ignored.
-   * Units: rad/s
    */
   angularVelocityY: float
   /**
    * Z component of angular velocity, positive is yawing to the right, NaN to be ignored.
-   * Units: rad/s
    */
   angularVelocityZ: float
 }
@@ -12887,7 +12127,6 @@ export class GimbalDeviceInformation extends MavLinkData {
 
   /**
    * Timestamp (time since system boot).
-   * Units: ms
    */
   timeBootMs: uint32_t
   /**
@@ -12926,32 +12165,26 @@ export class GimbalDeviceInformation extends MavLinkData {
   customCapFlags: uint16_t
   /**
    * Minimum hardware roll angle (positive: rolling to the right, negative: rolling to the left)
-   * Units: rad
    */
   rollMin: float
   /**
    * Maximum hardware roll angle (positive: rolling to the right, negative: rolling to the left)
-   * Units: rad
    */
   rollMax: float
   /**
    * Minimum hardware pitch angle (positive: up, negative: down)
-   * Units: rad
    */
   pitchMin: float
   /**
    * Maximum hardware pitch angle (positive: up, negative: down)
-   * Units: rad
    */
   pitchMax: float
   /**
    * Minimum hardware yaw angle (positive: to the right, negative: to the left)
-   * Units: rad
    */
   yawMin: float
   /**
    * Maximum hardware yaw angle (positive: to the right, negative: to the left)
-   * Units: rad
    */
   yawMax: float
 }
@@ -12996,17 +12229,14 @@ export class GimbalDeviceSetAttitude extends MavLinkData {
   q: float[]
   /**
    * X component of angular velocity, positive is rolling to the right, NaN to be ignored.
-   * Units: rad/s
    */
   angularVelocityX: float
   /**
    * Y component of angular velocity, positive is pitching up, NaN to be ignored.
-   * Units: rad/s
    */
   angularVelocityY: float
   /**
    * Z component of angular velocity, positive is yawing to the right, NaN to be ignored.
-   * Units: rad/s
    */
   angularVelocityZ: float
 }
@@ -13046,7 +12276,6 @@ export class GimbalDeviceAttitudeStatus extends MavLinkData {
   targetComponent: uint8_t
   /**
    * Timestamp (time since system boot).
-   * Units: ms
    */
   timeBootMs: uint32_t
   /**
@@ -13060,17 +12289,14 @@ export class GimbalDeviceAttitudeStatus extends MavLinkData {
   q: float[]
   /**
    * X component of angular velocity (NaN if unknown)
-   * Units: rad/s
    */
   angularVelocityX: float
   /**
    * Y component of angular velocity (NaN if unknown)
-   * Units: rad/s
    */
   angularVelocityY: float
   /**
    * Z component of angular velocity (NaN if unknown)
-   * Units: rad/s
    */
   angularVelocityZ: float
   /**
@@ -13116,7 +12342,6 @@ export class AutopilotStateForGimbalDevice extends MavLinkData {
   targetComponent: uint8_t
   /**
    * Timestamp (time since system boot).
-   * Units: us
    */
   timeBootUs: uint64_t
   /**
@@ -13126,33 +12351,27 @@ export class AutopilotStateForGimbalDevice extends MavLinkData {
   q: float[]
   /**
    * Estimated delay of the attitude data.
-   * Units: us
    */
   qEstimatedDelayUs: uint32_t
   /**
    * X Speed in NED (North, East, Down).
-   * Units: m/s
    */
   vx: float
   /**
    * Y Speed in NED (North, East, Down).
-   * Units: m/s
    */
   vy: float
   /**
    * Z Speed in NED (North, East, Down).
-   * Units: m/s
    */
   vz: float
   /**
    * Estimated delay of the speed data.
-   * Units: us
    */
   vEstimatedDelayUs: uint32_t
   /**
    * Feed forward Z component of angular velocity, positive is yawing to the right, NaN to be ignored.
    * This is to indicate if the autopilot is actively yawing.
-   * Units: rad/s
    */
   feedForwardAngularVelocityZ: float
   /**
@@ -13206,22 +12425,18 @@ export class GimbalManagerSetPitchyaw extends MavLinkData {
   gimbalDeviceId: uint8_t
   /**
    * Pitch angle (positive: up, negative: down, NaN to be ignored).
-   * Units: rad
    */
   pitch: float
   /**
    * Yaw angle (positive: to the right, negative: to the left, NaN to be ignored).
-   * Units: rad
    */
   yaw: float
   /**
    * Pitch angular rate (positive: up, negative: down, NaN to be ignored).
-   * Units: rad/s
    */
   pitchRate: float
   /**
    * Yaw angular rate (positive: to the right, negative: to the left, NaN to be ignored).
-   * Units: rad/s
    */
   yawRate: float
 }
@@ -13313,7 +12528,6 @@ export class EscInfo extends MavLinkData {
   /**
    * Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format
    * (since 1.1.1970 or since system boot) by checking for the magnitude the number.
-   * Units: us
    */
   timeUsec: uint64_t
   /**
@@ -13343,7 +12557,6 @@ export class EscInfo extends MavLinkData {
   errorCount: uint32_t[]
   /**
    * Temperature of each ESC. INT16_MAX: if data not supplied by ESC.
-   * Units: cdegC
    */
   temperature: int16_t[]
 }
@@ -13374,22 +12587,18 @@ export class EscStatus extends MavLinkData {
   /**
    * Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format
    * (since 1.1.1970 or since system boot) by checking for the magnitude the number.
-   * Units: us
    */
   timeUsec: uint64_t
   /**
    * Reported motor RPM from each ESC (negative for reverse rotation).
-   * Units: rpm
    */
   rpm: int32_t[]
   /**
    * Voltage measured from each ESC.
-   * Units: V
    */
   voltage: float[]
   /**
    * Current measured from each ESC.
-   * Units: A
    */
   current: float[]
 }
@@ -13465,32 +12674,26 @@ export class AisVessel extends MavLinkData {
   MMSI: uint32_t
   /**
    * Latitude
-   * Units: degE7
    */
   lat: int32_t
   /**
    * Longitude
-   * Units: degE7
    */
   lon: int32_t
   /**
    * Course over ground
-   * Units: cdeg
    */
   COG: uint16_t
   /**
    * True heading
-   * Units: cdeg
    */
   heading: uint16_t
   /**
    * Speed over ground
-   * Units: cm/s
    */
   velocity: uint16_t
   /**
    * Turn rate
-   * Units: cdeg/s
    */
   turnRate: int8_t
   /**
@@ -13503,22 +12706,18 @@ export class AisVessel extends MavLinkData {
   type: AisType
   /**
    * Distance from lat/lon location to bow
-   * Units: m
    */
   dimensionBow: uint16_t
   /**
    * Distance from lat/lon location to stern
-   * Units: m
    */
   dimensionStern: uint16_t
   /**
    * Distance from lat/lon location to port side
-   * Units: m
    */
   dimensionPort: uint8_t
   /**
    * Distance from lat/lon location to starboard side
-   * Units: m
    */
   dimensionStarboard: uint8_t
   /**
@@ -13531,7 +12730,6 @@ export class AisVessel extends MavLinkData {
   name: string
   /**
    * Time since last communication in seconds
-   * Units: s
    */
   tslc: uint16_t
   /**
@@ -13563,12 +12761,10 @@ export class UavcanNodeStatus extends MavLinkData {
   /**
    * Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format
    * (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
-   * Units: us
    */
   timeUsec: uint64_t
   /**
    * Time since the start-up of the node.
-   * Units: s
    */
   uptimeSec: uint32_t
   /**
@@ -13618,12 +12814,10 @@ export class UavcanNodeInfo extends MavLinkData {
   /**
    * Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format
    * (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
-   * Units: us
    */
   timeUsec: uint64_t
   /**
    * Time since the start-up of the node.
-   * Units: s
    */
   uptimeSec: uint32_t
   /**
@@ -13866,7 +13060,6 @@ export class ObstacleDistance extends MavLinkData {
   /**
    * Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format
    * (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
-   * Units: us
    */
   timeUsec: uint64_t
   /**
@@ -13878,36 +13071,30 @@ export class ObstacleDistance extends MavLinkData {
    * otherwise specified in the frame. A value of 0 is valid and means that the obstacle is practically
    * touching the sensor. A value of max_distance +1 means no obstacle is present. A value of UINT16_MAX
    * for unknown/not used. In a array element, one unit corresponds to 1cm.
-   * Units: cm
    */
   distances: uint16_t[]
   /**
    * Angular width in degrees of each array element. Increment direction is clockwise. This field is
    * ignored if increment_f is non-zero.
-   * Units: deg
    */
   increment: uint8_t
   /**
    * Minimum distance the sensor can measure.
-   * Units: cm
    */
   minDistance: uint16_t
   /**
    * Maximum distance the sensor can measure.
-   * Units: cm
    */
   maxDistance: uint16_t
   /**
    * Angular width in degrees of each array element as a float. If non-zero then this value is used
    * instead of the uint8_t increment field. Positive is clockwise direction, negative is
    * counter-clockwise.
-   * Units: deg
    */
   incrementF: float
   /**
    * Relative angle offset of the 0-index element in the distances array. Value of 0 corresponds to
    * forward. Positive is clockwise direction, negative is counter-clockwise.
-   * Units: deg
    */
   angleOffset: float
   /**
@@ -13951,7 +13138,6 @@ export class Odometry extends MavLinkData {
   /**
    * Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format
    * (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
-   * Units: us
    */
   timeUsec: uint64_t
   /**
@@ -13964,17 +13150,14 @@ export class Odometry extends MavLinkData {
   childFrameId: MavFrame
   /**
    * X Position
-   * Units: m
    */
   x: float
   /**
    * Y Position
-   * Units: m
    */
   y: float
   /**
    * Z Position
-   * Units: m
    */
   z: float
   /**
@@ -13983,32 +13166,26 @@ export class Odometry extends MavLinkData {
   q: float[]
   /**
    * X linear speed
-   * Units: m/s
    */
   vx: float
   /**
    * Y linear speed
-   * Units: m/s
    */
   vy: float
   /**
    * Z linear speed
-   * Units: m/s
    */
   vz: float
   /**
    * Roll angular speed
-   * Units: rad/s
    */
   rollspeed: float
   /**
    * Pitch angular speed
-   * Units: rad/s
    */
   pitchspeed: float
   /**
    * Yaw angular speed
-   * Units: rad/s
    */
   yawspeed: float
   /**
@@ -14064,7 +13241,6 @@ export class TrajectoryRepresentationWaypoints extends MavLinkData {
   /**
    * Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format
    * (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
-   * Units: us
    */
   timeUsec: uint64_t
   /**
@@ -14073,57 +13249,46 @@ export class TrajectoryRepresentationWaypoints extends MavLinkData {
   validPoints: uint8_t
   /**
    * X-coordinate of waypoint, set to NaN if not being used
-   * Units: m
    */
   posX: float[]
   /**
    * Y-coordinate of waypoint, set to NaN if not being used
-   * Units: m
    */
   posY: float[]
   /**
    * Z-coordinate of waypoint, set to NaN if not being used
-   * Units: m
    */
   posZ: float[]
   /**
    * X-velocity of waypoint, set to NaN if not being used
-   * Units: m/s
    */
   velX: float[]
   /**
    * Y-velocity of waypoint, set to NaN if not being used
-   * Units: m/s
    */
   velY: float[]
   /**
    * Z-velocity of waypoint, set to NaN if not being used
-   * Units: m/s
    */
   velZ: float[]
   /**
    * X-acceleration of waypoint, set to NaN if not being used
-   * Units: m/s/s
    */
   accX: float[]
   /**
    * Y-acceleration of waypoint, set to NaN if not being used
-   * Units: m/s/s
    */
   accY: float[]
   /**
    * Z-acceleration of waypoint, set to NaN if not being used
-   * Units: m/s/s
    */
   accZ: float[]
   /**
    * Yaw angle, set to NaN if not being used
-   * Units: rad
    */
   posYaw: float[]
   /**
    * Yaw rate, set to NaN if not being used
-   * Units: rad/s
    */
   velYaw: float[]
   /**
@@ -14155,7 +13320,6 @@ export class TrajectoryRepresentationBezier extends MavLinkData {
   /**
    * Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format
    * (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
-   * Units: us
    */
   timeUsec: uint64_t
   /**
@@ -14164,27 +13328,22 @@ export class TrajectoryRepresentationBezier extends MavLinkData {
   validPoints: uint8_t
   /**
    * X-coordinate of bezier control points. Set to NaN if not being used
-   * Units: m
    */
   posX: float[]
   /**
    * Y-coordinate of bezier control points. Set to NaN if not being used
-   * Units: m
    */
   posY: float[]
   /**
    * Z-coordinate of bezier control points. Set to NaN if not being used
-   * Units: m
    */
   posZ: float[]
   /**
    * Bezier time horizon. Set to NaN if velocity/acceleration should not be incorporated
-   * Units: s
    */
   delta: float[]
   /**
    * Yaw. Set to NaN for unchanged
-   * Units: rad
    */
   posYaw: float[]
 }
@@ -14261,13 +13420,11 @@ export class IsbdLinkStatus extends MavLinkData {
   /**
    * Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format
    * (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
-   * Units: us
    */
   timestamp: uint64_t
   /**
    * Timestamp of the last successful sbd session. The receiving end can infer timestamp format (since
    * 1.1.1970 or since system boot) by checking for the magnitude of the number.
-   * Units: us
    */
   lastHeartbeat: uint64_t
   /**
@@ -14377,7 +13534,6 @@ export class RawRpm extends MavLinkData {
   index: uint8_t
   /**
    * Indicated rate
-   * Units: rpm
    */
   frequency: float
 }
@@ -14414,7 +13570,6 @@ export class UtmGlobalPosition extends MavLinkData {
 
   /**
    * Time of applicability of position (microseconds since UNIX epoch).
-   * Units: us
    */
   time: uint64_t
   /**
@@ -14423,72 +13578,58 @@ export class UtmGlobalPosition extends MavLinkData {
   uasId: uint8_t[]
   /**
    * Latitude (WGS84)
-   * Units: degE7
    */
   lat: int32_t
   /**
    * Longitude (WGS84)
-   * Units: degE7
    */
   lon: int32_t
   /**
    * Altitude (WGS84)
-   * Units: mm
    */
   alt: int32_t
   /**
    * Altitude above ground
-   * Units: mm
    */
   relativeAlt: int32_t
   /**
    * Ground X speed (latitude, positive north)
-   * Units: cm/s
    */
   vx: int16_t
   /**
    * Ground Y speed (longitude, positive east)
-   * Units: cm/s
    */
   vy: int16_t
   /**
    * Ground Z speed (altitude, positive down)
-   * Units: cm/s
    */
   vz: int16_t
   /**
    * Horizontal position uncertainty (standard deviation)
-   * Units: mm
    */
   hAcc: uint16_t
   /**
    * Altitude uncertainty (standard deviation)
-   * Units: mm
    */
   vAcc: uint16_t
   /**
    * Speed uncertainty (standard deviation)
-   * Units: cm/s
    */
   velAcc: uint16_t
   /**
    * Next waypoint, latitude (WGS84)
-   * Units: degE7
    */
   nextLat: int32_t
   /**
    * Next waypoint, longitude (WGS84)
-   * Units: degE7
    */
   nextLon: int32_t
   /**
    * Next waypoint, altitude (WGS84)
-   * Units: mm
    */
   nextAlt: int32_t
   /**
    * Time until next update. Set to 0 if unknown or in data driven mode.
-   * Units: cs
    */
   updateRate: uint16_t
   /**
@@ -14522,7 +13663,6 @@ export class DebugFloatArray extends MavLinkData {
   /**
    * Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format
    * (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
-   * Units: us
    */
   timeUsec: uint64_t
   /**
@@ -14560,13 +13700,11 @@ export class OrbitExecutionStatus extends MavLinkData {
   /**
    * Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format
    * (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
-   * Units: us
    */
   timeUsec: uint64_t
   /**
    * Radius of the orbit circle. Positive values orbit clockwise, negative values orbit
    * counter-clockwise.
-   * Units: m
    */
   radius: float
   /**
@@ -14585,7 +13723,6 @@ export class OrbitExecutionStatus extends MavLinkData {
   y: int32_t
   /**
    * Altitude of center point. Coordinate system depends on frame field.
-   * Units: m
    */
   z: float
 }
@@ -14634,12 +13771,10 @@ export class SmartBatteryInfo extends MavLinkData {
   type: MavBatteryType
   /**
    * Capacity when full according to manufacturer, -1: field not provided.
-   * Units: mAh
    */
   capacityFullSpecification: int32_t
   /**
    * Capacity when full (accounting for battery degradation), -1: field not provided.
-   * Units: mAh
    */
   capacityFull: int32_t
   /**
@@ -14657,27 +13792,22 @@ export class SmartBatteryInfo extends MavLinkData {
   deviceName: string
   /**
    * Battery weight. 0: field not provided.
-   * Units: g
    */
   weight: uint16_t
   /**
    * Minimum per-cell voltage when discharging. If not supplied set to UINT16_MAX value.
-   * Units: mV
    */
   dischargeMinimumVoltage: uint16_t
   /**
    * Minimum per-cell voltage when charging. If not supplied set to UINT16_MAX value.
-   * Units: mV
    */
   chargingMinimumVoltage: uint16_t
   /**
    * Minimum per-cell voltage when resting. If not supplied set to UINT16_MAX value.
-   * Units: mV
    */
   restingMinimumVoltage: uint16_t
   /**
    * Maximum per-cell voltage when charged. 0: field not provided.
-   * Units: mV
    */
   chargingMaximumVoltage: uint16_t
   /**
@@ -14686,12 +13816,10 @@ export class SmartBatteryInfo extends MavLinkData {
   cellsInSeries: uint8_t
   /**
    * Maximum pack discharge current. 0: field not provided.
-   * Units: mA
    */
   dischargeMaximumCurrent: uint32_t
   /**
    * Maximum pack discharge burst current. 0: field not provided.
-   * Units: mA
    */
   dischargeMaximumBurstCurrent: uint32_t
   /**
@@ -14729,55 +13857,45 @@ export class GeneratorStatus extends MavLinkData {
   status: MavGeneratorStatusFlag
   /**
    * Speed of electrical generator or alternator. UINT16_MAX: field not provided.
-   * Units: rpm
    */
   generatorSpeed: uint16_t
   /**
    * Current into/out of battery. Positive for out. Negative for in. NaN: field not provided.
-   * Units: A
    */
   batteryCurrent: float
   /**
    * Current going to the UAV. If battery current not available this is the DC current from the
    * generator. Positive for out. Negative for in. NaN: field not provided
-   * Units: A
    */
   loadCurrent: float
   /**
    * The power being generated. NaN: field not provided
-   * Units: W
    */
   powerGenerated: float
   /**
    * Voltage of the bus seen at the generator, or battery bus if battery bus is controlled by generator
    * and at a different voltage to main bus.
-   * Units: V
    */
   busVoltage: float
   /**
    * The temperature of the rectifier or power converter. INT16_MAX: field not provided.
-   * Units: degC
    */
   rectifierTemperature: int16_t
   /**
    * The target battery current. Positive for out. Negative for in. NaN: field not provided
-   * Units: A
    */
   batCurrentSetpoint: float
   /**
    * The temperature of the mechanical motor, fuel cell core or generator. INT16_MAX: field not provided.
-   * Units: degC
    */
   generatorTemperature: int16_t
   /**
    * Seconds this generator has run since it was rebooted. UINT32_MAX: field not provided.
-   * Units: s
    */
   runtime: uint32_t
   /**
    * Seconds until this generator requires maintenance. A negative value indicates maintenance is
    * past-due. INT32_MAX: field not provided.
-   * Units: s
    */
   timeUntilMaintenance: int32_t
 }
@@ -14800,7 +13918,6 @@ export class ActuatorOutputStatus extends MavLinkData {
 
   /**
    * Timestamp (since system boot).
-   * Units: us
    */
   timeUsec: uint64_t
   /**
@@ -14834,31 +13951,26 @@ export class TimeEstimateToTarget extends MavLinkData {
    * Estimated time to complete the vehicle's configured "safe return" action from its current position
    * (e.g. RTL, Smart RTL, etc.). -1 indicates that the vehicle is landed, or that no time estimate
    * available.
-   * Units: s
    */
   safeReturn: int32_t
   /**
    * Estimated time for vehicle to complete the LAND action from its current position. -1 indicates that
    * the vehicle is landed, or that no time estimate available.
-   * Units: s
    */
   land: int32_t
   /**
    * Estimated time for reaching/completing the currently active mission item. -1 means no time estimate
    * available.
-   * Units: s
    */
   missionNextItem: int32_t
   /**
    * Estimated time for completing the current mission. -1 means no mission active and/or no estimate
    * available.
-   * Units: s
    */
   missionEnd: int32_t
   /**
    * Estimated time for completing the current commanded action (i.e. Go To, Takeoff, Land, etc.). -1
    * means no action active and/or no estimate available.
-   * Units: s
    */
   commandedAction: int32_t
 }
@@ -14944,12 +14056,10 @@ export class OnboardComputerStatus extends MavLinkData {
   /**
    * Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format
    * (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
-   * Units: us
    */
   timeUsec: uint64_t
   /**
    * Time since system boot.
-   * Units: ms
    */
   uptime: uint32_t
   /**
@@ -14981,27 +14091,22 @@ export class OnboardComputerStatus extends MavLinkData {
   gpuCombined: uint8_t[]
   /**
    * Temperature of the board. A value of INT8_MAX implies the field is unused.
-   * Units: degC
    */
   temperatureBoard: int8_t
   /**
    * Temperature of the CPU core. A value of INT8_MAX implies the field is unused.
-   * Units: degC
    */
   temperatureCore: int8_t[]
   /**
    * Fan speeds. A value of INT16_MAX implies the field is unused.
-   * Units: rpm
    */
   fanSpeed: int16_t[]
   /**
    * Amount of used RAM on the component system. A value of UINT32_MAX implies the field is unused.
-   * Units: MiB
    */
   ramUsage: uint32_t
   /**
    * Total amount of RAM on the component system. A value of UINT32_MAX implies the field is unused.
-   * Units: MiB
    */
   ramTotal: uint32_t
   /**
@@ -15012,13 +14117,11 @@ export class OnboardComputerStatus extends MavLinkData {
   /**
    * Amount of used storage space on the component system. A value of UINT32_MAX implies the field is
    * unused.
-   * Units: MiB
    */
   storageUsage: uint32_t[]
   /**
    * Total amount of storage space on the component system. A value of UINT32_MAX implies the field is
    * unused.
-   * Units: MiB
    */
   storageTotal: uint32_t[]
   /**
@@ -15028,22 +14131,18 @@ export class OnboardComputerStatus extends MavLinkData {
   linkType: uint32_t[]
   /**
    * Network traffic from the component system. A value of UINT32_MAX implies the field is unused.
-   * Units: KiB/s
    */
   linkTxRate: uint32_t[]
   /**
    * Network traffic to the component system. A value of UINT32_MAX implies the field is unused.
-   * Units: KiB/s
    */
   linkRxRate: uint32_t[]
   /**
    * Network capacity from the component system. A value of UINT32_MAX implies the field is unused.
-   * Units: KiB/s
    */
   linkTxMax: uint32_t[]
   /**
    * Network capacity to the component system. A value of UINT32_MAX implies the field is unused.
-   * Units: KiB/s
    */
   linkRxMax: uint32_t[]
 }
@@ -15069,7 +14168,6 @@ export class ComponentInformation extends MavLinkData {
 
   /**
    * Timestamp (time since system boot).
-   * Units: ms
    */
   timeBootMs: uint32_t
   /**
@@ -15191,7 +14289,6 @@ export class Event extends MavLinkData {
   id: uint32_t
   /**
    * Timestamp (time since system boot when the event happened).
-   * Units: ms
    */
   eventTimeBootMs: uint32_t
   /**
@@ -15327,7 +14424,6 @@ export class WheelDistance extends MavLinkData {
 
   /**
    * Timestamp (synced to UNIX time or since system boot).
-   * Units: us
    */
   timeUsec: uint64_t
   /**
@@ -15338,7 +14434,6 @@ export class WheelDistance extends MavLinkData {
    * Distance reported by individual wheel encoders. Forward rotations increase values, reverse rotations
    * decrease them. Not all wheels will necessarily have wheel encoders; the mapping of encoders to wheel
    * positions must be agreed/understood by the endpoints.
-   * Units: m
    */
   distance: double[]
 }
@@ -15365,38 +14460,31 @@ export class WinchStatus extends MavLinkData {
 
   /**
    * Timestamp (synced to UNIX time or since system boot).
-   * Units: us
    */
   timeUsec: uint64_t
   /**
    * Length of line released. NaN if unknown
-   * Units: m
    */
   lineLength: float
   /**
    * Speed line is being released or retracted. Positive values if being released, negative values if
    * being retracted, NaN if unknown
-   * Units: m/s
    */
   speed: float
   /**
    * Tension on the line. NaN if unknown
-   * Units: kg
    */
   tension: float
   /**
    * Voltage of the battery supplying the winch. NaN if unknown
-   * Units: V
    */
   voltage: float
   /**
    * Current draw from the winch. NaN if unknown
-   * Units: A
    */
   current: float
   /**
    * Temperature of the motor. INT16_MAX if unknown
-   * Units: degC
    */
   temperature: int16_t
   /**
@@ -15508,40 +14596,33 @@ export class OpenDroneIdLocation extends MavLinkData {
   /**
    * Direction over ground (not heading, but direction of movement) measured clockwise from true North: 0
    * - 35999 centi-degrees. If unknown: 36100 centi-degrees.
-   * Units: cdeg
    */
   direction: uint16_t
   /**
    * Ground speed. Positive only. If unknown: 25500 cm/s. If speed is larger than 25425 cm/s, use 25425
    * cm/s.
-   * Units: cm/s
    */
   speedHorizontal: uint16_t
   /**
    * The vertical speed. Up is positive. If unknown: 6300 cm/s. If speed is larger than 6200 cm/s, use
    * 6200 cm/s. If lower than -6200 cm/s, use -6200 cm/s.
-   * Units: cm/s
    */
   speedVertical: int16_t
   /**
    * Current latitude of the unmanned aircraft. If unknown: 0 (both Lat/Lon).
-   * Units: degE7
    */
   latitude: int32_t
   /**
    * Current longitude of the unmanned aircraft. If unknown: 0 (both Lat/Lon).
-   * Units: degE7
    */
   longitude: int32_t
   /**
    * The altitude calculated from the barometric pressue. Reference is against 29.92inHg or 1013.2mb. If
    * unknown: -1000 m.
-   * Units: m
    */
   altitudeBarometric: float
   /**
    * The geodetic altitude as defined by WGS84. If unknown: -1000 m.
-   * Units: m
    */
   altitudeGeodetic: float
   /**
@@ -15551,7 +14632,6 @@ export class OpenDroneIdLocation extends MavLinkData {
   /**
    * The current height of the unmanned aircraft above the take-off location or the ground as indicated
    * by height_reference. If unknown: -1000 m.
-   * Units: m
    */
   height: float
   /**
@@ -15574,7 +14654,6 @@ export class OpenDroneIdLocation extends MavLinkData {
    * Seconds after the full hour with reference to UTC time. Typically the GPS outputs a time-of-week
    * value in milliseconds. First convert that to UTC and then convert for this field using ((float)
    * (time_week_ms % (60*60*1000))) / 1000. If unknown: 0xFFFF.
-   * Units: s
    */
   timestamp: float
   /**
@@ -15640,12 +14719,10 @@ export class OpenDroneIdAuthentication extends MavLinkData {
    * This field is only present for page 0. Total bytes of authentication_data from all data pages. See
    * the description of struct ODID_Auth_data at
    * https://github.com/opendroneid/opendroneid-core-c/blob/master/libopendroneid/opendroneid.h.
-   * Units: bytes
    */
   length: uint8_t
   /**
    * This field is only present for page 0. 32 bit Unix Timestamp in seconds since 00:00:00 01/01/2019.
-   * Units: s
    */
   timestamp: uint32_t
   /**
@@ -15749,12 +14826,10 @@ export class OpenDroneIdSystem extends MavLinkData {
   classificationType: MavOdidClassificationType
   /**
    * Latitude of the operator. If unknown: 0 (both Lat/Lon).
-   * Units: degE7
    */
   operatorLatitude: int32_t
   /**
    * Longitude of the operator. If unknown: 0 (both Lat/Lon).
-   * Units: degE7
    */
   operatorLongitude: int32_t
   /**
@@ -15763,17 +14838,14 @@ export class OpenDroneIdSystem extends MavLinkData {
   areaCount: uint16_t
   /**
    * Radius of the cylindrical area of the group or formation (default 0).
-   * Units: m
    */
   areaRadius: uint16_t
   /**
    * Area Operations Ceiling relative to WGS84. If unknown: -1000 m.
-   * Units: m
    */
   areaCeiling: float
   /**
    * Area Operations Floor relative to WGS84. If unknown: -1000 m.
-   * Units: m
    */
   areaFloor: float
   /**
@@ -15786,7 +14858,6 @@ export class OpenDroneIdSystem extends MavLinkData {
   classEu: MavOdidClassEu
   /**
    * Geodetic altitude of the operator relative to WGS84. If unknown: -1000 m.
-   * Units: m
    */
   operatorAltitudeGeo: float
 }
@@ -15870,7 +14941,6 @@ export class OpenDroneIdMessagePack extends MavLinkData {
   /**
    * This field must currently always be equal to 25 (bytes), since all encoded OpenDroneID messages are
    * specificed to have this length.
-   * Units: bytes
    */
   singleMessageSize: uint8_t
   /**
@@ -15905,12 +14975,10 @@ export class HygrometerSensor extends MavLinkData {
   id: uint8_t
   /**
    * Temperature
-   * Units: cdegC
    */
   temperature: int16_t
   /**
    * Humidity
-   * Units: c%
    */
   humidity: uint16_t
 }
